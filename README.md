@@ -19,7 +19,7 @@ Also download your PS data and unzip it in a convenient place for you.
 
 ## Installation
 You just need to copy the extract.py script at the root directory of the trip you want to extract.
-(zip file provided by PS contains all your recorded trips in separated folders, each trip folder contains 2 files locations.json and trip.json and as many additionnal folders as the steps of your trip. Theses folders contain images, video and locations.json files related to each step)
+(zip file provided by PS contains all your recorded trips in separated folders, each trip folder contains 2 files locations.json and trip.json and as many additionnal folders as the steps of your trip. Theses folders contain images and videos files related to each step)
 
 ## Execution
 Run this program with the following command :
