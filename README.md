@@ -16,6 +16,7 @@ This script needs also some libraries that should be installed prior to executio
 - [pillow](https://pypi.org/project/pillow/) : `pip install Pillow` ; this allows picture manipulations
 - [pycairo](https://pypi.org/project/pycairo/) : `pip install pycairo` ; this allows anti-aliased maps
 - [staticmaps](https://github.com/flopp/py-staticmaps) : `pip install py-staticmaps[cairo]` ; this allows map generation
+
 (if you do not install pillow, pycairo or staticmaps the script will detect it and will not generate maps)
 
 Also download your PS data and unzip it in a convenient place for you.
