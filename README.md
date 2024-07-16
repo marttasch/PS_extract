@@ -23,14 +23,14 @@ Also download your PS data and unzip it in a convenient place for you.
 
 ## Installation
 You just need to copy the `extract.py` script at the root directory of the trip you want to extract.
-(the zip file downloaded from PS contains all your recorded trips in separated folders, each trip folder contains 2 files (locations.json and trip.json) and as many additionnal folders as steps in your trip. These folders contain photos and videos files related to each step)
+(the zip file downloaded from PS contains all your recorded trips in separated folders, each trip folder contains 2 files (``locations.json`` and ``trip.json``) and as many additionnal folders as steps in your trip. These folders contain photos and videos files related to each step)
 
 ## Execution
 Run this program with the following command :
 
 ``python3 (/path_to_program_directory/)extract.py [options]``
     
-The program will create an 'Extracts' directory and extract in it all information from your Polarsteps data in a readable text file (.txt), and automatically generated static maps (PNG files) of your trip and steps.
+The program will create an ``Extracts`` directory and extract in it all information from your Polarsteps data in a readable text file (.txt), and automatically generated static maps (PNG files) of your trip and steps.
 In addition, you can choose to generate localy browsable HTML pages to navigate through your steps, and/or generate emails for each step (with text, images and videos from your steps). It is possible to extract data step by step in interactive mode, or to generate all files for the whole trip.
 
 Here are the additional options that could be combined and put at launch:
@@ -41,6 +41,26 @@ Here are the additional options that could be combined and put at launch:
 + ``-x``, ``-exclude`` :                  to exclude the first and last steps from generated maps presenting the whole trip (allow to focus the map when origin country is far away)
                            
 anything else will display help.
+
+## Results
+All generated files are stored in ``Extracts`` folder created at execution (inside your trip folder, at the same level than ``locations.json`` and ``trip.json`` files).
+
+In all cases :
++ ``{trip_name}_{trip_start_date}.txt`` : generated text file with all trip/steps information. For example, ``Paris_2024-07-14.txt`` for a trip which name is Paris, started on 2024 July 14th.
+  
+If local html option is activated :
++ ``index.htm`` : main html page with trip information, 1 image, step name and link to step page for each step 
++ ``local.css`` : CSS file applied to all html files ; you can change easily global appearance by modifying it
++ ``{step_id}.htm`` : page providing information on one step, with all photos and videos (viewable in a gallery) and links to main page and previous and next steps. For example, ``111234555.htm`` for the step which ID is 111234555 in PS.
+  
+If local html option or email option is activated :
++ ``steps_map.png`` : generated map with one marker for each step location
++ ``map_{step_id}.png`` : generated map centered on one step. For example, ``map_111234555.png`` for the step which ID is 111234555 in PS.
++ ``trip_map.png`` : generated map with all locations tracked by Polarsteps and paths between them
+
+If email option is activated, the following emails will be generated and sent to the specified address :
++ step email : one email per step with information from the step, photos and videos of the step attached, and the generated map for this step
++ trip email : one global email with the trip information, and steps map attached
 
 ## Contributions
 First steps of extracting PS data were done through https://github.com/adamlporter/PolarSteps python script, giving me the basic elements to build this more featured script. 
