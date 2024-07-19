@@ -24,14 +24,14 @@ import mimetypes
 from pathlib import Path
 from email.message import EmailMessage
 from email.utils import formatdate
-try :
+try : # if error while importing graphic library then map generation is disabled
     from PIL import Image
     import cairo
     import staticmaps
     gen_map = True
 except:
     gen_map = False
-    print("--> Map generation module not available.")
+    print("! Map generation module not available.")
 
 # if these global email parameters are not set in the script they will be asked interactively when trying to send an email
 dest_email =  '' 
@@ -40,10 +40,12 @@ mail_serv = 'smtp.gmail.com' # you can change for any other email provider serve
 mail_port = 465 # change for smtp port your server expect to be called on
 mail_login = '' # put here your email login
 mail_passwd = '' # put here your password - for gmail should be an App password (16 letters)
-extract_dir = "Extracts"
-no_location = True # suppose there are no locatiosn until json is parsed
 
-# set all specific run modes of the script to False ; should be modified trough launching args 
+# other global parameters
+extract_dir = "Extracts"
+no_location = True # suppose there are no locations until json is parsed
+
+# set all specific run modes of the script to False ; should be modified through launching args 
 mail = False
 local = False
 interactive = False
@@ -75,7 +77,7 @@ def email(msg):
     global mail_port
     global mail_login
     global mail_passwd
-    # ask for non defined parameters
+    # ask for undefined parameters
     if dest_email == "": dest_email = input(f"--> Input destination address where emails should be sent (i.e. myblog.mywp.com): ") 
     if orig_email == "": orig_email = input(f"--> Input email address you want to appear in sent emails (i.e. myaddress.myisp.com): ") 
     if mail_serv == "": mail_serv = input(f"--> Input email server that should be used to send emails (i.e. smtp.myisp.com): ") 
@@ -111,15 +113,14 @@ def parse_data(data, original_path, extract_dir):
     global verbose
     global exclude
     global no_location
-    # define table to use special UTF-8 characters (emoticon) to weather conditions and country
+    # define table to use special UTF-8 characters (emoticon) to weather conditions and countries
     weather_dict = {"rain":"\U0001F327","clear-day":"\U0001F506","partly-cloudy-day":"\U000026C5","snow":"\U000026C4","cloudy":"\U00002601"}
-    country_dict = {"USA":"\U0001F1FA\U0001F1F8","Andorra":"\U0001F1E6\U0001F1E9","Albania":"\U0001F1E6\U0001F1F1","Austria":"\U0001F1E6\U0001F1F9","Bosnia and Herzegovina":"\U0001F1E7\U0001F1E6","Belgium":"\U0001F1E7\U0001F1EA","Bulgaria":"\U0001F1E7\U0001F1EC","Belarus":"\U0001F1E7\U0001F1FE","Switzerland":"\U0001F1E8\U0001F1ED","Cyprus":"\U0001F1E8\U0001F1FE","Czechia":"\U0001F1E8\U0001F1FF","Germany":"\U0001F1E9\U0001F1EA","Denmark":"\U0001F1E9\U0001F1F0","Spain":"\U0001F1EA\U0001F1F8","Estonia":"\U0001F1EA\U0001F1EA","Finland":"\U0001F1EB\U0001F1EE","France":"\U0001F1EB\U0001F1F7","United Kingdom":"\U0001F1EC\U0001F1E7","Greece":"\U0001F1EC\U0001F1F7","Croatia":"\U0001F1ED\U0001F1F7","Hungary":"\U0001F1ED\U0001F1FA","Ireland":"\U0001F1EE\U0001F1EA","Iceland":"\U0001F1EE\U0001F1F8","Italy":"\U0001F1EE\U0001F1F9","Kosovo":"\U0001F1FD\U0001F1F0","Liechtenstein":"\U0001F1F1\U0001F1EE","Lithuania":"\U0001F1F1\U0001F1F9","Luxembourg":"\U0001F1F1\U0001F1FA","Latvia":"\U0001F1F1\U0001F1FB","Malta":"\U0001F1F2\U0001F1F9","Monaco":"\U0001F1F2\U0001F1E8","Moldova":"\U0001F1F2\U0001F1E9","Montenegro":"\U0001F1F2\U0001F1EA","North Macedonia":"\U0001F1F2\U0001F1F0","Netherlands":"\U0001F1F3\U0001F1F1","Norway":"\U0001F1F3\U0001F1F4","Poland":"\U0001F1F5\U0001F1F1","Portugal":"\U0001F1F5\U0001F1F9","Romania":"\U0001F1F7\U0001F1F4","Serbia":"\U0001F1F7\U0001F1F8","Russia":"\U0001F1F7\U0001F1FA","Sweden":"\U0001F1F8\U0001F1EA","Slovenia":"\U0001F1F8\U0001F1EE","Slovakia":"\U0001F1F8\U0001F1F0","Ukraine":"\U0001F1FA\U0001F1E6",
-    "United Arab Emirates":"\U0001F1E6\U0001F1EA","Afghanistan":"\U0001F1E6\U0001F1EB","Antigua and Barbuda":"\U0001F1E6\U0001F1EC","Anguilla":"\U0001F1E6\U0001F1EE","Armenia":"\U0001F1E6\U0001F1F2","Angola":"\U0001F1E6\U0001F1F4","Antarctica":"\U0001F1E6\U0001F1F6","Argentina":"\U0001F1E6\U0001F1F7","American Samoa":"\U0001F1E6\U0001F1F8","Australia":"\U0001F1E6\U0001F1FA","Aruba":"\U0001F1E6\U0001F1FC","Åland Islands":"\U0001F1E6\U0001F1FD","Azerbaijan":"\U0001F1E6\U0001F1FF","Barbados":"\U0001F1E7\U0001F1E7","Bangladesh":"\U0001F1E7\U0001F1E9","Burkina Faso":"\U0001F1E7\U0001F1EB","Bahrain":"\U0001F1E7\U0001F1ED","Burundi":"\U0001F1E7\U0001F1EE","Benin":"\U0001F1E7\U0001F1EF","Saint Barthélemy":"\U0001F1E7\U0001F1F1","Bermuda":"\U0001F1E7\U0001F1F2","Brunei Darussalam":"\U0001F1E7\U0001F1F3","Bolivia":"\U0001F1E7\U0001F1F4","Bonaire, Sint Eustatius and Saba":"\U0001F1E7\U0001F1F6","Brazil":"\U0001F1E7\U0001F1F7","Bahamas":"\U0001F1E7\U0001F1F8","Bhutan":"\U0001F1E7\U0001F1F9","Bouvet Island":"\U0001F1E7\U0001F1FB","Botswana":"\U0001F1E7\U0001F1FC","Belize":"\U0001F1E7\U0001F1FF","Canada":"\U0001F1E8\U0001F1E6","Cocos (Keeling) Islands":"\U0001F1E8\U0001F1E8","Congo":"\U0001F1E8\U0001F1E9","Central African Republic":"\U0001F1E8\U0001F1EB","Congo":"\U0001F1E8\U0001F1EC","Côte D'Ivoire":"\U0001F1E8\U0001F1EE","Cook Islands":"\U0001F1E8\U0001F1F0","Chile":"\U0001F1E8\U0001F1F1","Cameroon":"\U0001F1E8\U0001F1F2","China":"\U0001F1E8\U0001F1F3","Colombia":"\U0001F1E8\U0001F1F4","Costa Rica":"\U0001F1E8\U0001F1F7","Cuba":"\U0001F1E8\U0001F1FA","Cape Verde":"\U0001F1E8\U0001F1FB","Curaçao":"\U0001F1E8\U0001F1FC","Christmas Island":"\U0001F1E8\U0001F1FD",
-    "Djibouti":"\U0001F1E9\U0001F1EF","Dominica":"\U0001F1E9\U0001F1F2","Dominican Republic":"\U0001F1E9\U0001F1F4","Algeria":"\U0001F1E9\U0001F1FF","Ecuador":"\U0001F1EA\U0001F1E8","Egypt":"\U0001F1EA\U0001F1EC","Western Sahara":"\U0001F1EA\U0001F1ED","Eritrea":"\U0001F1EA\U0001F1F7","Ethiopia":"\U0001F1EA\U0001F1F9","Fiji":"\U0001F1EB\U0001F1EF","Falkland Islands (Malvinas)":"\U0001F1EB\U0001F1F0","Micronesia":"\U0001F1EB\U0001F1F2","Faroe Islands":"\U0001F1EB\U0001F1F4","Gabon":"\U0001F1EC\U0001F1E6","Grenada":"\U0001F1EC\U0001F1E9","Georgia":"\U0001F1EC\U0001F1EA","French Guiana":"\U0001F1EC\U0001F1EB","Guernsey":"\U0001F1EC\U0001F1EC","Ghana":"\U0001F1EC\U0001F1ED","Gibraltar":"\U0001F1EC\U0001F1EE","Greenland":"\U0001F1EC\U0001F1F1","Gambia":"\U0001F1EC\U0001F1F2","Guinea":"\U0001F1EC\U0001F1F3","Guadeloupe":"\U0001F1EC\U0001F1F5","Equatorial Guinea":"\U0001F1EC\U0001F1F6","South Georgia":"\U0001F1EC\U0001F1F8","Guatemala":"\U0001F1EC\U0001F1F9","Guam":"\U0001F1EC\U0001F1FA","Guinea-Bissau":"\U0001F1EC\U0001F1FC","Guyana":"\U0001F1EC\U0001F1FE","Hong Kong":"\U0001F1ED\U0001F1F0","Heard Island and Mcdonald Islands":"\U0001F1ED\U0001F1F2","Honduras":"\U0001F1ED\U0001F1F3","Haiti":"\U0001F1ED\U0001F1F9","Indonesia":"\U0001F1EE\U0001F1E9","Israel":"\U0001F1EE\U0001F1F1","Isle of Man":"\U0001F1EE\U0001F1F2","India":"\U0001F1EE\U0001F1F3","British Indian Ocean Territory":"\U0001F1EE\U0001F1F4","Iraq":"\U0001F1EE\U0001F1F6","Iran":"\U0001F1EE\U0001F1F7",
-    "Jersey":"\U0001F1EF\U0001F1EA","Jamaica":"\U0001F1EF\U0001F1F2","Jordan":"\U0001F1EF\U0001F1F4","Japan":"\U0001F1EF\U0001F1F5","Kenya":"\U0001F1F0\U0001F1EA","Kyrgyzstan":"\U0001F1F0\U0001F1EC","Cambodia":"\U0001F1F0\U0001F1ED","Kiribati":"\U0001F1F0\U0001F1EE","Comoros":"\U0001F1F0\U0001F1F2","Saint Kitts and Nevis":"\U0001F1F0\U0001F1F3","North Korea":"\U0001F1F0\U0001F1F5","South Korea":"\U0001F1F0\U0001F1F7","Kuwait":"\U0001F1F0\U0001F1FC","Cayman Islands":"\U0001F1F0\U0001F1FE","Kazakhstan":"\U0001F1F0\U0001F1FF","Lao People's Democratic Republic":"\U0001F1F1\U0001F1E6","Lebanon":"\U0001F1F1\U0001F1E7","Saint Lucia":"\U0001F1F1\U0001F1E8","Sri Lanka":"\U0001F1F1\U0001F1F0","Liberia":"\U0001F1F1\U0001F1F7","Lesotho":"\U0001F1F1\U0001F1F8","Libya":"\U0001F1F1\U0001F1FE","Morocco":"\U0001F1F2\U0001F1E6","Saint Martin (French Part)":"\U0001F1F2\U0001F1EB","Madagascar":"\U0001F1F2\U0001F1EC","Marshall Islands":"\U0001F1F2\U0001F1ED","Mali":"\U0001F1F2\U0001F1F1","Myanmar":"\U0001F1F2\U0001F1F2","Mongolia":"\U0001F1F2\U0001F1F3","Macao":"\U0001F1F2\U0001F1F4","Northern Mariana Islands":"\U0001F1F2\U0001F1F5","Martinique":"\U0001F1F2\U0001F1F6","Mauritania":"\U0001F1F2\U0001F1F7","Montserrat":"\U0001F1F2\U0001F1F8","Mauritius":"\U0001F1F2\U0001F1FA","Maldives":"\U0001F1F2\U0001F1FB","Malawi":"\U0001F1F2\U0001F1FC","Mexico":"\U0001F1F2\U0001F1FD","Malaysia":"\U0001F1F2\U0001F1FE","Mozambique":"\U0001F1F2\U0001F1FF","Namibia":"\U0001F1F3\U0001F1E6","New Caledonia":"\U0001F1F3\U0001F1E8","Niger":"\U0001F1F3\U0001F1EA","Norfolk Island":"\U0001F1F3\U0001F1EB","Nigeria":"\U0001F1F3\U0001F1EC","Nicaragua":"\U0001F1F3\U0001F1EE","Nepal":"\U0001F1F3\U0001F1F5","Nauru":"\U0001F1F3\U0001F1F7","Niue":"\U0001F1F3\U0001F1FA","New Zealand":"\U0001F1F3\U0001F1FF",
-    "Oman":"\U0001F1F4\U0001F1F2","Panama":"\U0001F1F5\U0001F1E6","Peru":"\U0001F1F5\U0001F1EA","French Polynesia":"\U0001F1F5\U0001F1EB","Papua New Guinea":"\U0001F1F5\U0001F1EC","Philippines":"\U0001F1F5\U0001F1ED","Pakistan":"\U0001F1F5\U0001F1F0","Saint Pierre and Miquelon":"\U0001F1F5\U0001F1F2","Pitcairn":"\U0001F1F5\U0001F1F3","Puerto Rico":"\U0001F1F5\U0001F1F7","Palestinian Territory":"\U0001F1F5\U0001F1F8","Palau":"\U0001F1F5\U0001F1FC","Paraguay":"\U0001F1F5\U0001F1FE","Qatar":"\U0001F1F6\U0001F1E6","Réunion":"\U0001F1F7\U0001F1EA","Rwanda":"\U0001F1F7\U0001F1FC","Saudi Arabia":"\U0001F1F8\U0001F1E6","Solomon Islands":"\U0001F1F8\U0001F1E7","Seychelles":"\U0001F1F8\U0001F1E8","Sudan":"\U0001F1F8\U0001F1E9","Singapore":"\U0001F1F8\U0001F1EC","Saint Helena, Ascension and Tristan Da Cunha":"\U0001F1F8\U0001F1ED","Svalbard and Jan Mayen":"\U0001F1F8\U0001F1EF","Sierra Leone":"\U0001F1F8\U0001F1F1","San Marino":"\U0001F1F8\U0001F1F2","Senegal":"\U0001F1F8\U0001F1F3","Somalia":"\U0001F1F8\U0001F1F4","Suriname":"\U0001F1F8\U0001F1F7","South Sudan":"\U0001F1F8\U0001F1F8","Sao Tome and Principe":"\U0001F1F8\U0001F1F9","El Salvador":"\U0001F1F8\U0001F1FB","Sint Maarten (Dutch Part)":"\U0001F1F8\U0001F1FD","Syrian Arab Republic":"\U0001F1F8\U0001F1FE","Swaziland":"\U0001F1F8\U0001F1FF","Turks and Caicos Islands":"\U0001F1F9\U0001F1E8","Chad":"\U0001F1F9\U0001F1E9","French Southern Territories":"\U0001F1F9\U0001F1EB","Togo":"\U0001F1F9\U0001F1EC","Thailand":"\U0001F1F9\U0001F1ED","Tajikistan":"\U0001F1F9\U0001F1EF","Tokelau":"\U0001F1F9\U0001F1F0","Timor-Leste":"\U0001F1F9\U0001F1F1","Turkmenistan":"\U0001F1F9\U0001F1F2","Tunisia":"\U0001F1F9\U0001F1F3","Tonga":"\U0001F1F9\U0001F1F4","Turkey":"\U0001F1F9\U0001F1F7","Trinidad and Tobago":"\U0001F1F9\U0001F1F9","Tuvalu":"\U0001F1F9\U0001F1FB","Taiwan":"\U0001F1F9\U0001F1FC","Tanzania":"\U0001F1F9\U0001F1FF","Uganda":"\U0001F1FA\U0001F1EC","United States Minor Outlying Islands":"\U0001F1FA\U0001F1F2","United States":"\U0001F1FA\U0001F1F8","Uruguay":"\U0001F1FA\U0001F1FE","Uzbekistan":"\U0001F1FA\U0001F1FF","Vatican City":"\U0001F1FB\U0001F1E6","Saint Vincent and The Grenadines":"\U0001F1FB\U0001F1E8","Venezuela":"\U0001F1FB\U0001F1EA","Virgin Islands, British":"\U0001F1FB\U0001F1EC","Virgin Islands, U.S.":"\U0001F1FB\U0001F1EE","Viet Nam":"\U0001F1FB\U0001F1F3","Vanuatu":"\U0001F1FB\U0001F1FA","Wallis and Futuna":"\U0001F1FC\U0001F1EB","Samoa":"\U0001F1FC\U0001F1F8","Yemen":"\U0001F1FE\U0001F1EA","Mayotte":"\U0001F1FE\U0001F1F9","South Africa":"\U0001F1FF\U0001F1E6","Zambia":"\U0001F1FF\U0001F1F2","Zimbabwe":"\U0001F1FF\U0001F1FC"}
+    country_dict = { #these countries denominations have been tested as used by PS in 2024/07
+"Andorra":"\U0001F1E6\U0001F1E9","United Arab Emirates":"\U0001F1E6\U0001F1EA","Afghanistan":"\U0001F1E6\U0001F1EB","Antigua and Barbuda":"\U0001F1E6\U0001F1EC","Anguilla":"\U0001F1E6\U0001F1EE","Albania":"\U0001F1E6\U0001F1F1","Armenia":"\U0001F1E6\U0001F1F2","Angola":"\U0001F1E6\U0001F1F4","Antarctica":"\U0001F1E6\U0001F1F6","Argentina":"\U0001F1E6\U0001F1F7","Austria":"\U0001F1E6\U0001F1F9","Australia":"\U0001F1E6\U0001F1FA","Azerbaijan":"\U0001F1E6\U0001F1FF","Bosnia and Herzegovina":"\U0001F1E7\U0001F1E6","Barbados":"\U0001F1E7\U0001F1E7","Bangladesh":"\U0001F1E7\U0001F1E9","Belgium":"\U0001F1E7\U0001F1EA","Burkina Faso":"\U0001F1E7\U0001F1EB","Bulgaria":"\U0001F1E7\U0001F1EC","Bahrain":"\U0001F1E7\U0001F1ED","Burundi":"\U0001F1E7\U0001F1EE","Benin":"\U0001F1E7\U0001F1EF","Saint Barthelemy":"\U0001F1E7\U0001F1F1","Bermuda":"\U0001F1E7\U0001F1F2","Brunei":"\U0001F1E7\U0001F1F3","Bolivia":"\U0001F1E7\U0001F1F4","Brazil":"\U0001F1E7\U0001F1F7","Bahamas":"\U0001F1E7\U0001F1F8","Bhutan":"\U0001F1E7\U0001F1F9","Botswana":"\U0001F1E7\U0001F1FC","Belarus":"\U0001F1E7\U0001F1FE","Belize":"\U0001F1E7\U0001F1FF","Canada":"\U0001F1E8\U0001F1E6","Democratic Republic of the Congo":"\U0001F1E8\U0001F1E9","Central African Republic":"\U0001F1E8\U0001F1EB","Congo":"\U0001F1E8\U0001F1EC","Switzerland":"\U0001F1E8\U0001F1ED","Côte d'Ivoire":"\U0001F1E8\U0001F1EE","Cook Islands":"\U0001F1E8\U0001F1F0","Chile":"\U0001F1E8\U0001F1F1","Cameroon":"\U0001F1E8\U0001F1F2","China":"\U0001F1E8\U0001F1F3","Colombia":"\U0001F1E8\U0001F1F4","Costa Rica":"\U0001F1E8\U0001F1F7","Cuba":"\U0001F1E8\U0001F1FA","Cape Verde":"\U0001F1E8\U0001F1FB","Curacao":"\U0001F1E8\U0001F1FC","Cyprus":"\U0001F1E8\U0001F1FE","Czechia":"\U0001F1E8\U0001F1FF","Germany":"\U0001F1E9\U0001F1EA","Djibouti":"\U0001F1E9\U0001F1EF","Denmark":"\U0001F1E9\U0001F1F0","Dominica":"\U0001F1E9\U0001F1F2","Dominican Republic":"\U0001F1E9\U0001F1F4","Algeria":"\U0001F1E9\U0001F1FF","Ecuador":"\U0001F1EA\U0001F1E8","Estonia":"\U0001F1EA\U0001F1EA","Egypt":"\U0001F1EA\U0001F1EC","Sahrawi Arab Democratic Republic":"\U0001F1EA\U0001F1ED","Eritrea":"\U0001F1EA\U0001F1F7","Spain":"\U0001F1EA\U0001F1F8","Ethiopia":"\U0001F1EA\U0001F1F9","Finland":"\U0001F1EB\U0001F1EE","Fiji":"\U0001F1EB\U0001F1EF","Falkland Islands":"\U0001F1EB\U0001F1F0","Federated States of Micronesia":"\U0001F1EB\U0001F1F2","Faroe Islands":"\U0001F1EB\U0001F1F4","France":"\U0001F1EB\U0001F1F7","Gabon":"\U0001F1EC\U0001F1E6","United Kingdom":"\U0001F1EC\U0001F1E7","Grenada":"\U0001F1EC\U0001F1E9","Georgia":"\U0001F1EC\U0001F1EA","Guernsey":"\U0001F1EC\U0001F1EC","Ghana":"\U0001F1EC\U0001F1ED","Gibraltar":"\U0001F1EC\U0001F1EE","Greenland":"\U0001F1EC\U0001F1F1","The Gambia":"\U0001F1EC\U0001F1F2","Guinea":"\U0001F1EC\U0001F1F3","Equatorial Guinea":"\U0001F1EC\U0001F1F6","Greece":"\U0001F1EC\U0001F1F7","South Georgia and the South Sandwich Islands":"\U0001F1EC\U0001F1F8","Guatemala":"\U0001F1EC\U0001F1F9","Guinea-Bissau":"\U0001F1EC\U0001F1FC","Guyana":"\U0001F1EC\U0001F1FE","Hong Kong":"\U0001F1ED\U0001F1F0","Honduras":"\U0001F1ED\U0001F1F3","Croatia":"\U0001F1ED\U0001F1F7","Haiti":"\U0001F1ED\U0001F1F9","Hungary":"\U0001F1ED\U0001F1FA","Indonesia":"\U0001F1EE\U0001F1E9","Ireland":"\U0001F1EE\U0001F1EA","Israel":"\U0001F1EE\U0001F1F1","Isle of Man":"\U0001F1EE\U0001F1F2","India":"\U0001F1EE\U0001F1F3","British Indian Ocean Territory":"\U0001F1EE\U0001F1F4","Iraq":"\U0001F1EE\U0001F1F6","Iran":"\U0001F1EE\U0001F1F7","Iceland":"\U0001F1EE\U0001F1F8","Italy":"\U0001F1EE\U0001F1F9","Jersey":"\U0001F1EF\U0001F1EA","Jamaica":"\U0001F1EF\U0001F1F2","Jordan":"\U0001F1EF\U0001F1F4","Japan":"\U0001F1EF\U0001F1F5","Kenya":"\U0001F1F0\U0001F1EA","Kyrgyzstan":"\U0001F1F0\U0001F1EC","Cambodia":"\U0001F1F0\U0001F1ED","Kiribati":"\U0001F1F0\U0001F1EE","Comoros":"\U0001F1F0\U0001F1F2","Saint Kitts and Nevis":"\U0001F1F0\U0001F1F3","North Korea":"\U0001F1F0\U0001F1F5","South Korea":"\U0001F1F0\U0001F1F7","Kuwait":"\U0001F1F0\U0001F1FC","Cayman Islands":"\U0001F1F0\U0001F1FE","Kazakhstan":"\U0001F1F0\U0001F1FF","Laos":"\U0001F1F1\U0001F1E6","Lebanon":"\U0001F1F1\U0001F1E7","Saint Lucia":"\U0001F1F1\U0001F1E8","Liechtenstein":"\U0001F1F1\U0001F1EE","Sri Lanka":"\U0001F1F1\U0001F1F0","Liberia":"\U0001F1F1\U0001F1F7","Lesotho":"\U0001F1F1\U0001F1F8","Lithuania":"\U0001F1F1\U0001F1F9","Luxembourg":"\U0001F1F1\U0001F1FA","Latvia":"\U0001F1F1\U0001F1FB","Libya":"\U0001F1F1\U0001F1FE","Morocco":"\U0001F1F2\U0001F1E6","Monaco":"\U0001F1F2\U0001F1E8","Moldova":"\U0001F1F2\U0001F1E9","Montenegro":"\U0001F1F2\U0001F1EA","Saint Martin":"\U0001F1F2\U0001F1EB","Madagascar":"\U0001F1F2\U0001F1EC","Marshall Islands":"\U0001F1F2\U0001F1ED","North Macedonia":"\U0001F1F2\U0001F1F0","Mali":"\U0001F1F2\U0001F1F1","Myanmar":"\U0001F1F2\U0001F1F2","Mongolia":"\U0001F1F2\U0001F1F3","Mauritania":"\U0001F1F2\U0001F1F7","Montserrat":"\U0001F1F2\U0001F1F8","Malta":"\U0001F1F2\U0001F1F9","Mauritius":"\U0001F1F2\U0001F1FA","Maldives":"\U0001F1F2\U0001F1FB","Malawi":"\U0001F1F2\U0001F1FC","Mexico":"\U0001F1F2\U0001F1FD","Malaysia":"\U0001F1F2\U0001F1FE","Mozambique":"\U0001F1F2\U0001F1FF","Namibia":"\U0001F1F3\U0001F1E6","New Caledonia":"\U0001F1F3\U0001F1E8","Niger":"\U0001F1F3\U0001F1EA","Norfolk Island":"\U0001F1F3\U0001F1EB","Nigeria":"\U0001F1F3\U0001F1EC","Nicaragua":"\U0001F1F3\U0001F1EE","Netherlands":"\U0001F1F3\U0001F1F1","Norway":"\U0001F1F3\U0001F1F4","Nepal":"\U0001F1F3\U0001F1F5","Nauru":"\U0001F1F3\U0001F1F7","Niue":"\U0001F1F3\U0001F1FA","New Zealand":"\U0001F1F3\U0001F1FF","Oman":"\U0001F1F4\U0001F1F2","Panama":"\U0001F1F5\U0001F1E6","Peru":"\U0001F1F5\U0001F1EA","Papua New Guinea":"\U0001F1F5\U0001F1EC","Philippines":"\U0001F1F5\U0001F1ED","Pakistan":"\U0001F1F5\U0001F1F0","Poland":"\U0001F1F5\U0001F1F1","Pitcairn Islands":"\U0001F1F5\U0001F1F3","Puerto Rico":"\U0001F1F5\U0001F1F7","Palestinian Territory":"\U0001F1F5\U0001F1F8","Portugal":"\U0001F1F5\U0001F1F9","Palau":"\U0001F1F5\U0001F1FC","Paraguay":"\U0001F1F5\U0001F1FE","Qatar":"\U0001F1F6\U0001F1E6","Romania":"\U0001F1F7\U0001F1F4","Serbia":"\U0001F1F7\U0001F1F8","Russia":"\U0001F1F7\U0001F1FA","Rwanda":"\U0001F1F7\U0001F1FC","Saudi Arabia":"\U0001F1F8\U0001F1E6","Solomon Islands":"\U0001F1F8\U0001F1E7","Seychelles":"\U0001F1F8\U0001F1E8","Sudan":"\U0001F1F8\U0001F1E9","Sweden":"\U0001F1F8\U0001F1EA","Singapore":"\U0001F1F8\U0001F1EC","Saint Helena, Ascension and Tristan da Cunha":"\U0001F1F8\U0001F1ED","Slovenia":"\U0001F1F8\U0001F1EE","Slovakia":"\U0001F1F8\U0001F1F0","Sierra Leone":"\U0001F1F8\U0001F1F1","San Marino":"\U0001F1F8\U0001F1F2","Senegal":"\U0001F1F8\U0001F1F3","Somalia":"\U0001F1F8\U0001F1F4","Suriname":"\U0001F1F8\U0001F1F7","South Sudan":"\U0001F1F8\U0001F1F8","São Tomé and Príncipe":"\U0001F1F8\U0001F1F9","El Salvador":"\U0001F1F8\U0001F1FB","Sint Maarten":"\U0001F1F8\U0001F1FD","Syria":"\U0001F1F8\U0001F1FE","eSwatini":"\U0001F1F8\U0001F1FF","Turks and Caicos Islands":"\U0001F1F9\U0001F1E8","Chad":"\U0001F1F9\U0001F1E9","French Southern and Antarctic Lands":"\U0001F1F9\U0001F1EB","Togo":"\U0001F1F9\U0001F1EC","Thailand":"\U0001F1F9\U0001F1ED","Tajikistan":"\U0001F1F9\U0001F1EF","Tokelau":"\U0001F1F9\U0001F1F0","East Timor":"\U0001F1F9\U0001F1F1","Turkmenistan":"\U0001F1F9\U0001F1F2","Tunisia":"\U0001F1F9\U0001F1F3","Tonga":"\U0001F1F9\U0001F1F4","Turkey":"\U0001F1F9\U0001F1F7","Trinidad and Tobago":"\U0001F1F9\U0001F1F9","Tuvalu":"\U0001F1F9\U0001F1FB","Taiwan":"\U0001F1F9\U0001F1FC","Tanzania":"\U0001F1F9\U0001F1FF","Ukraine":"\U0001F1FA\U0001F1E6","Uganda":"\U0001F1FA\U0001F1EC","USA":"\U0001F1FA\U0001F1F8","Uruguay":"\U0001F1FA\U0001F1FE","Uzbekistan":"\U0001F1FA\U0001F1FF","Vatican City":"\U0001F1FB\U0001F1E6","Saint Vincent and the Grenadines":"\U0001F1FB\U0001F1E8","Venezuela":"\U0001F1FB\U0001F1EA","British Virgin Islands":"\U0001F1FB\U0001F1EC","US Virgin Islands":"\U0001F1FB\U0001F1EE","Vietnam":"\U0001F1FB\U0001F1F3","Vanuatu":"\U0001F1FB\U0001F1FA","Samoa":"\U0001F1FC\U0001F1F8","Kosovo":"\U0001F1FD\U0001F1F0","Yemen":"\U0001F1FE\U0001F1EA","South Africa":"\U0001F1FF\U0001F1E6","Zambia":"\U0001F1FF\U0001F1F2","Zimbabwe":"\U0001F1FF\U0001F1FC",
+# additional denominations not identified as used by PS
+"American Samoa":"\U0001F1E6\U0001F1F8","Aruba":"\U0001F1E6\U0001F1FC","Åland Islands":"\U0001F1E6\U0001F1FD","Bonaire, Sint Eustatius and Saba":"\U0001F1E7\U0001F1F6","Bouvet Island":"\U0001F1E7\U0001F1FB","Cocos (Keeling) Islands":"\U0001F1E8\U0001F1E8","Christmas Island":"\U0001F1E8\U0001F1FD","French Guiana":"\U0001F1EC\U0001F1EB","Guadeloupe":"\U0001F1EC\U0001F1F5","Guam":"\U0001F1EC\U0001F1FA","Heard Island and Mcdonald Islands":"\U0001F1ED\U0001F1F2","Macao":"\U0001F1F2\U0001F1F4","Northern Mariana Islands":"\U0001F1F2\U0001F1F5","Martinique":"\U0001F1F2\U0001F1F6","French Polynesia":"\U0001F1F5\U0001F1EB","Saint Pierre and Miquelon":"\U0001F1F5\U0001F1F2","Réunion":"\U0001F1F7\U0001F1EA","Svalbard and Jan Mayen":"\U0001F1F8\U0001F1EF","United States Minor Outlying Islands":"\U0001F1FA\U0001F1F2","Wallis and Futuna":"\U0001F1FC\U0001F1EB","Mayotte":"\U0001F1FE\U0001F1F9"}
     
-    # define CSS file that will be generated for local html generation
+    # define CSS file that will be created for local html generation
     css_text = """
 html, body {
     font-family: arial;
@@ -263,7 +264,8 @@ a {
     if data['end_date'] != None: trip_end_date = datetime.datetime.fromtimestamp(data['end_date']).strftime('%Y-%m-%d')
     else: trip_end_date = "?"
     total_distance = data['total_km']
-    phone_type = data['travel_tracker_device']['device_name']
+    if data['travel_tracker_device'] != None: phone_type = data['travel_tracker_device']['device_name']
+    else: phone_type = "?"
     timezone_id = data['timezone_id']
     total_entries = data['step_count']
     
@@ -309,7 +311,10 @@ a {
             if location_country in country_dict:
                 country = country_dict[location_country]
                 if location_detail != location_country: country = country + " "+location_detail.split(",")[0]
-            else: country = location_detail
+                # print(f"Flag for country '{location_country}' detected")
+            else: 
+                country = location_detail
+                print(f"! Flag for country '{location_country}' not present !")
             # get weather condition and if possible replace weather text by corresponding emoticon
             weather_condition = entry['weather_condition']
             weather = weather_dict[weather_condition] if weather_condition in weather_dict else weather_condition
@@ -328,8 +333,6 @@ a {
                 # create step related html file
                 step_file = open(f"{extract_dir}\{step_id}.htm",'w', encoding="utf-8")
                 step_file.write(f"<head>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"local.css\">\n</head>\n<body>\n<h1>{step_name}</h1>\n<p id=intro>{country} {location_name} \U0001F538 {weather} {int(temperature)}°C\n<br><br>")
-                #if gen_map: index_file.write(f"<img src=\"map_{step_id}.png\"><br><br>")
-                #index_file.write(f"\n{journal}</p>\n")
             # generate email structure
             msg = EmailMessage()
             msg['Subject'] = step_name
@@ -506,7 +509,7 @@ anything else will display this help
 
 
 # Main program
-print(f"Extraction of Polarsteps data:")
+print(f"=== Extraction of Polarsteps data ===")
 # define json files names used by PS
 trip_file = 'trip.json'
 map_file = 'locations.json'
@@ -523,7 +526,7 @@ if args_nb > 0:
                 dest_email = sys.argv[args_index]
                 print(f"Email option activated (sending to {dest_email}).")
             else:
-                print(f"Not enough arguments : missing destination email")
+                print(f"! Not enough arguments : missing destination email")
                 printInstructions()
                 exit()
         elif strParam == "-exclude" or strParam == "-x": 
@@ -539,17 +542,17 @@ if args_nb > 0:
             verbose = True
             print(f"Verbose option activated.")
         else: 
-            print(f"'{strParam}' is not an admitted parameter.")
+            print(f"! '{strParam}' is not an admitted parameter.")
             printInstructions()
             exit()
         args_index = args_index + 1
-# create extraction directory to store generated files
+# create extraction directory to store all generated files
 try:
     Path(extract_dir).mkdir(parents=True, exist_ok=True)
 except:
-    print(f"Could not create directory ({extract_dir}) to host files.")
+    print(f"! Could not create directory ({extract_dir}) to host files.")
     exit()
-# analyse locations file
+# analyse locations file (just to generate a map with the tracks of the steps)
 if os.path.exists(map_file):
     with open(map_file, encoding="utf-8" ) as f_in:
         print(f"Extracting trip track from {map_file} file...")
@@ -560,7 +563,7 @@ if os.path.exists(map_file):
         last = None
         sorted_by_time = sorted(loc_data['locations'], key=lambda x: x['time'])
         for loc in loc_data['locations']:
-            if gen_map and not exclude: trip_map.add_object(staticmaps.Marker(staticmaps.create_latlng(loc['lat'], loc['lon']), size=2))     
+            if gen_map: trip_map.add_object(staticmaps.Marker(staticmaps.create_latlng(loc['lat'], loc['lon']), size=2))     
         if gen_map and len(sorted_by_time)>0:
             if len(sorted_by_time)>1:
                 line = [staticmaps.create_latlng(p['lat'], p['lon']) for p in sorted_by_time]
@@ -570,13 +573,13 @@ if os.path.exists(map_file):
             print(f"Trip map generated.")
             no_location = False
 else:
-    print(f"Locations file ({map_file}) not found.") 
-# analyse trip file
+    print(f"! Locations file ({map_file}) not found.") 
+# analyse trip file (with the most important informtion to extract)
 if os.path.exists(trip_file):
     print(f"Extracting steps from {trip_file} file...")
     with open(trip_file, encoding="utf-8" ) as f_in:
         data = json.load(f_in)
     parse_data(data, os.getcwd(), extract_dir)
 else:
-    print(f"Input file ({trip_file}) not found.")
+    print(f"! Input file ({trip_file}) not found.")
     printInstructions()
