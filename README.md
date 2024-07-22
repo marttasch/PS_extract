@@ -45,18 +45,28 @@ anything else will display help.
 ## Results
 All generated files are stored in ``Extracts`` folder created at execution (inside your trip folder, at the same level than ``locations.json`` and ``trip.json`` files).
 
+The [example](example/trip/usa-2024_10825444) folder provides a trip sample with 
++ corresponding files from zip file from PS (``/trip/usa-2024_10825444/...``)
++ resulting files after execution of the script (``python3 extract.py -v -l``) in [Extracts](example/trip/usa-2024_10825444/Extracts) folder
+
 In all cases :
-+ ``{trip_name}_{trip_start_date}.txt`` : generated text file with all trip/steps information. For example, ``Paris_2024-07-14.txt`` for a trip which name is Paris, started on 2024 July 14th.
++ ``{trip_name}_{trip_start_date}.txt`` : generated text file with all trip/steps information. For example, ``USA 2024_2024-04-09.txt`` for a trip which name is 'USA 2024', started on 2024 April 09th.
   
 If local html option is activated :
 + ``index.htm`` : main html page with trip information, 1 image, step name and link to step page for each step 
 + ``local.css`` : CSS file applied to all html files ; you can change easily global appearance by modifying it
-+ ``{step_id}.htm`` : page providing information on one step, with all photos and videos (viewable in a gallery) and links to main page and previous and next steps. For example, ``111234555.htm`` for the step which ID is 111234555 in PS.
++ ``{step_id}.htm`` : page providing information on one step, with all photos and videos (viewable in a gallery) and links to main page and previous and next steps. For example, ``98177523.htm`` for the step which ID is 98177523 in PS.
   
 If local html option or email option is activated :
 + ``steps_map.png`` : generated map with one marker for each step location
-+ ``map_{step_id}.png`` : generated map centered on one step. For example, ``map_111234555.png`` for the step which ID is 111234555 in PS.
+  
+![steps_map.png](example/trip/usa-2024_10825444/Extracts/steps_map.png)  
++ ``map_{step_id}.png`` : generated map centered on one step. For example, ``map_98177523.png`` for the step which ID is 98177523 in PS.
+
+![map_98177523.png](example/trip/usa-2024_10825444/Extracts/map_98177523.png)  
 + ``trip_map.png`` : generated map with all locations tracked by Polarsteps and paths between them
+
+![trip_map.png](example/trip/usa-2024_10825444/Extracts/trip_map.png)  
 
 If email option is activated, the following emails will be generated and sent to the specified address :
 + step email : one email per step with information from the step, photos and videos of the step attached, and the generated map for this step
