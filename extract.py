@@ -146,6 +146,10 @@ p {
     margin-bottom: 20px;
 }
 
+small {
+    font-size: 0.5em;
+}
+
 .footer { 
     font-style: italic;
     margin-top: 45px;
@@ -301,6 +305,7 @@ a {
             creation_time = datetime.datetime.fromtimestamp(entry['start_time'])
             creation_time = creation_time.replace(tzinfo = from_zone)
             adjusted_time = creation_time.astimezone(to_zone)
+            adjusted_date = adjusted_time.strftime('%Y-%m-%d')
             # get location information
             location_name = entry['location']['name']
             location_lat = entry['location']['lat']
@@ -326,18 +331,22 @@ a {
             if verbose: text += f"Step Id: {step_id}, Slug: {step_slug}\n"
             text += f"Date: {adjusted_time.strftime('%Y-%m-%d %H:%M')}\n"
             if verbose: text += f"Location: {country} {location_name} ({location_lat},{location_lon} - {location_detail})"
-            text += f"\nWeather: {weather_condition}, Temperature: {temperature} (c)\n\n"
+            text += f"\nWeather: {weather_condition}, Temperature: {temperature}°C\n\n"
             text += f"{journal}\n\n"      
             if local: # generate html content
-                index_file.write(f"<h2>{step_name}<a href=\"{step_id}.htm\"></h2>\n")
+                index_file.write(f"<h2>{step_name} <small>{adjusted_date}</small></h2><a href=\"{step_id}.htm\">\n")
                 # create step related html file
                 step_file = open(f"{extract_dir}\{step_id}.htm",'w', encoding="utf-8")
-                step_file.write(f"<head>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"local.css\">\n</head>\n<body>\n<h1>{step_name}</h1>\n<p id=intro>{country} {location_name} \U0001F538 {weather} {int(temperature)}°C\n<br><br>")
+                step_file.write(f"<head>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"local.css\">\n</head>\n<body>\n<h1>{step_name}</h1>\n<p id=intro>{country} {location_name} \U0001F538 {adjusted_date} \U0001F538 {weather}")
+                if temperature != None: step_file.write(f" {int(temperature)}°C")
+                step_file.write(f"\n<br><br>")
             # generate email structure
             msg = EmailMessage()
             msg['Subject'] = step_name
             msg["Date"] = adjusted_time
-            mess = f"{country} {location_name} \U0001F538 {weather} {int(temperature)}°C\n\n{journal}\n"
+            mess = f"{country} {location_name} \U0001F538 {weather}"
+            if temperature != None: mess += f"{int(temperature)}°C"
+            mess += f"\n\n{journal}\n"
             msg.set_content(mess)
             # initialize counters before parsing photos and videos related to this step
             photos_nbr = 0
@@ -351,6 +360,7 @@ a {
                 with os.scandir(path) as entries:
                     sorted_entries = sorted(entries, key=get_modif_time)
                     sorted_photos = [entry.name for entry in sorted_entries]
+                    if "Thumbs.db" in sorted_photos: sorted_photos.remove("Thumbs.db")
                     photos_nbr = len(sorted_photos)
             # get the list of videos and sort them to try to retrieve PS order
             path = f"{original_path}\\{step_slug}_{step_id}\\videos"
@@ -560,9 +570,9 @@ if os.path.exists(map_file):
         if gen_map: 
             trip_map = tile(staticmaps.tile_provider_ArcGISWorldImagery)
             #trip_map.set_zoom(9)
-        last = None
         sorted_by_time = sorted(loc_data['locations'], key=lambda x: x['time'])
         for loc in loc_data['locations']:
+            #print("{\"lat\": "+str(loc['lat'])+", \"lon\": "+str(loc['lon'])+", \"time\": "+str(loc['time'])+"},")
             if gen_map: trip_map.add_object(staticmaps.Marker(staticmaps.create_latlng(loc['lat'], loc['lon']), size=2))     
         if gen_map and len(sorted_by_time)>0:
             if len(sorted_by_time)>1:
