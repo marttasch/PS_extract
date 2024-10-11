@@ -1,10 +1,22 @@
 <head>
     <link rel="stylesheet" type="text/css" href="local.css">
-</head>
-<body>
-<h1>Houston</h1>
-<p id=intro>🇺🇸 Texas Houston 🔸 2024-04-10 🔸 🌧 26°C
-<br><br><a href="#img1"><img class="thumb" src="..\houston_98394489\photos\f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg"></a>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    </head>
+    <body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>Houston</h1>
+    <p id=intro>🇺🇸 Texas Houston 🔸 2024-04-10 🔸 🌧 26°C
+<br><br><div id="mapid" style="height: 600px;"></div>
+<script>
+    var mymap = L.map('mapid').setView([29.7589382, -95.3676974], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+    var marker = {"lat": 29.7589382, "lon": -95.3676974, "name": "Houston", "date": "2024-04-10"};
+    L.marker([marker.lat, marker.lon]).addTo(mymap)
+        .bindPopup(marker.name + '<br>' + marker.date).openPopup();
+</script>
+<a href="#img1"><img class="thumb" src="..\houston_98394489\photos\f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg"></a>
 <div class="lightbox" id="img1">
 <a href="#_" class="btn-close">X</a>
 <img src="..\houston_98394489\photos\f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg">

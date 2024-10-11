@@ -1,10 +1,22 @@
 <head>
     <link rel="stylesheet" type="text/css" href="local.css">
-</head>
-<body>
-<h1>Total eclipse</h1>
-<p id=intro>🇺🇸 Texas Llano 🔸 2024-04-09 🔸 ⛅ 26°C
-<br><br><a href="#img1"><img class="thumb" src="..\llano_98177523\photos\1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg"></a>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    </head>
+    <body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>Total eclipse</h1>
+    <p id=intro>🇺🇸 Texas Llano 🔸 2024-04-09 🔸 ⛅ 26°C
+<br><br><div id="mapid" style="height: 600px;"></div>
+<script>
+    var mymap = L.map('mapid').setView([30.60385422230917, -98.70438914623729], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+    var marker = {"lat": 30.60385422230917, "lon": -98.70438914623729, "name": "Total eclipse", "date": "2024-04-09"};
+    L.marker([marker.lat, marker.lon]).addTo(mymap)
+        .bindPopup(marker.name + '<br>' + marker.date).openPopup();
+</script>
+<a href="#img1"><img class="thumb" src="..\llano_98177523\photos\1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg"></a>
 <div class="lightbox" id="img1">
 <a href="#_" class="btn-close">X</a>
 <img src="..\llano_98177523\photos\1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg">

@@ -3,47 +3,35 @@ Sample trip
 Start Date: 2024-04-09
 End Date: 2024-04-10
 Total Distance: 560(km) in 3 steps
-User Timezone: Europe/Paris
-Recording Device: None
 ____________________
 
 Step: Total eclipse
-Step Id: 98177523, Slug: llano
 Date: 2024-04-09 03:43
-Location: 🇺🇸 Texas Llano (30.60385422230917,-98.70438914623729 - Texas, USA)
+
 Weather: partly-cloudy-day, Temperature: 26.0°C
 
 2024 Sun total eclipse
 
-Photo 1: 1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg (0.0Mb)
-Photo 2: db3cbb86-7021-a2b1fa0d19ad_431d85dc-d231-4d1b-aacc-7d62fed537bc.jpg (0.0Mb)
-Video 0: f44ce54c-a2cc-7c93802a7c83_1a102faa-c8e7-4eed-115e-3cb7a4a07278.mp4 (11.5Mb)
 2 photo(s), 1 video(s) (11.5Mb)
 ____________________
 
 Step: Houston
-Step Id: 98394489, Slug: houston
 Date: 2024-04-10 03:00
-Location: 🇺🇸 Texas Houston (29.7589382,-95.3676974 - Texas, USA)
+
 Weather: rain, Temperature: 26.0°C
 
 Rain in Houston
 
-Photo 1: f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg (0.2Mb)
-Photo 2: 7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg (0.2Mb)
 2 photo(s), 0 video(s) (0.4Mb)
 ____________________
 
 Step: Houston Space Center and Galveston
-Step Id: 98534920, Slug: webster
 Date: 2024-04-10 19:01
-Location: 🇺🇸 Texas Webster (29.5468712,-95.1361146 - Texas, USA)
+
 Weather: rain, Temperature: 24.0°C
 
 Discovery and more ...
 
-Photo 1: 7a874e0f-afca-a4edb290c0a8_0156622f-e173-4ac2-ad3d-234f4bba1b57.jpg (0.1Mb)
-Photo 2: 8b066f77-b009-a79cd96a5f97_53f3f7be-a679-49ea-b191-6d83bcefe970.jpg (0.2Mb)
 2 photo(s), 0 video(s) (0.3Mb)
 ____________________
 
