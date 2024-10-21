@@ -1,0 +1,227 @@
+/* src/static/css/style.css */
+:root {
+    --background-color: #f0f2f5;
+    --text-color: #333;
+    --primary-color: #4a90e2;
+    --secondary-color: #50e3c2;
+    --accent-color: #f5a623;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+    font-family: var(--font-family);
+    padding: 0 2em;
+    font-size: 18px;
+    background: var(--background-color);
+    color: var(--text-color);
+    text-align: center;
+    margin: 0;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: 300;
+    margin-bottom: 0.2em;
+}
+
+h2 {
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    color: var(--primary-color);
+}
+
+p {
+    font-weight: 300;
+    color: var(--text-color);
+    margin-bottom: 1.5em;
+    line-height: 1.6;
+}
+
+small {
+    font-size: 0.8em;
+    color: var(--accent-color);
+}
+
+.footer { 
+    font-style: italic;
+    margin-top: 45px;
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: var(--accent-color);
+}
+
+.thumb {
+    max-height: 180px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.thumb:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.thumb-vid {
+    max-height: 180px;
+    border-radius: 8px;
+    opacity: 0.8;
+    margin: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.thumb-vid:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+.lightbox {
+    position: fixed;
+    z-index: 1000;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity 0.5s;
+    overflow: auto;
+}
+
+.lightbox img {
+    max-width: 95%;
+    max-height: 90%;
+    margin-top: 2%;
+    opacity: 0;
+    border-radius: 8px;
+    transition: opacity 0.5s;
+}
+
+.lightbox video {
+    max-width: 95%;
+    max-height: 90%;
+    margin-top: 2%;
+    opacity: 0;
+    border-radius: 8px;
+    transition: opacity 0.5s;
+}
+
+.lightbox:target {
+    outline: none;
+    opacity: 1;
+}
+
+.lightbox:target img,
+.lightbox:target video {
+    opacity: 1;
+}
+
+.light-btn {
+    color: #fff;
+    background-color: var(--primary-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: middle;
+    position: absolute;
+    top: 45%;
+    z-index: 1001;
+    font-size: 1.2em;
+    transition: background-color 0.3s;
+}
+
+.light-btn:hover {
+    background-color: var(--accent-color);
+}
+
+.btn-prev {
+    left: 5%;
+}
+
+.btn-next {
+    right: 5%;
+}
+
+.btn-close {
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    color: #fff;
+    background-color: #ff5c5c;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 1.5em;
+    z-index: 1001;
+    transition: background-color 0.3s;
+}
+
+.btn-close:hover {
+    background-color: #ff1c1c;
+}
+
+/* Styles for numbered circular markers */
+.numbered-marker .marker-circle {
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid #fff;
+}
+
+/* Map container styling */
+#mapid {
+    height: 600px;
+    margin-bottom: 1.5em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+    background-color: var(--accent-color);
+}
+
+.nav-button i {
+    margin-right: 8px;
+    font-size: 1.2em;
+}

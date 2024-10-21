@@ -1,0 +1,65 @@
+<!-- src/templates/step_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Houston</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>Houston</h1>
+    <p id="intro">USA Houston • 2024-04-10 • rain 26.0</p>
+    <div id="mapid"></div>
+
+    <p>Rain in Houston</p>
+
+    
+        <a href="#img1"><img class="thumb" src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Photo 1"></a>
+        <div class="lightbox" id="img1">
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Photo 1">
+            
+                <a href="#img2" class="light-btn btn-next">&#10095;</a>
+            
+        </div>
+    
+        <a href="#img2"><img class="thumb" src="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" alt="Photo 2"></a>
+        <div class="lightbox" id="img2">
+            
+                <a href="#img1" class="light-btn btn-prev">&#10094;</a>
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" alt="Photo 2">
+            
+        </div>
+    
+
+    
+
+    <div class="nav-buttons">
+        
+            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+        
+        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        
+            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+        
+    </div>
+
+     <script>
+        var mymap = L.map('mapid').setView([29.7589382, -95.3676974], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Add a marker at the step's location
+        var marker = L.marker([29.7589382, -95.3676974]).addTo(mymap)
+            .bindPopup('<b>Houston</b><br>2024-04-10').openPopup();
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!-- src/templates/step_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ step.name }}</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>{{ step.name }}</h1>
+    <p id="intro">{{ step.country }} {{ step.location_name }} • {{ step.date }} • {{ step.weather }} {{ step.temperature }}</p>
+    <div id="mapid"></div>
+
+    <p>{{ step.description }}</p>
+
+    {% for photo in step.photos %}
+        <a href="#img{{ loop.index }}"><img class="thumb" src="{{ photo }}" alt="Photo {{ loop.index }}"></a>
+        <div class="lightbox" id="img{{ loop.index }}">
+            {% if loop.index > 1 %}
+                <a href="#img{{ loop.index - 1 }}" class="light-btn btn-prev">&#10094;</a>
+            {% endif %}
+            <a href="#" class="btn-close">&times;</a>
+            <img src="{{ photo }}" alt="Photo {{ loop.index }}">
+            {% if loop.index < step.photos|length %}
+                <a href="#img{{ loop.index + 1 }}" class="light-btn btn-next">&#10095;</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    {% for video in step.videos %}
+        <a href="#vid{{ loop.index }}"><video class="thumb-vid" src="{{ video }}"></video></a>
+        <div class="lightbox" id="vid{{ loop.index }}">
+            {% if loop.index > 1 %}
+                <a href="#vid{{ loop.index - 1 }}" class="light-btn btn-prev">&#10094;</a>
+            {% endif %}
+            <a href="#" class="btn-close">&times;</a>
+            <video controls src="{{ video }}"></video>
+            {% if loop.index < step.videos|length %}
+                <a href="#vid{{ loop.index + 1 }}" class="light-btn btn-next">&#10095;</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <div class="nav-buttons">
+        {% if prev_step %}
+            <a href="{{ prev_step.id }}.html" class="nav-button"><i>&#9664;</i> {{ prev_step.name }}</a>
+        {% else %}
+            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+        {% endif %}
+        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        {% if next_step %}
+            <a href="{{ next_step.id }}.html" class="nav-button">{{ next_step.name }} <i>&#9654;</i></a>
+        {% else %}
+            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+        {% endif %}
+    </div>
+
+     <script>
+        var mymap = L.map('mapid').setView([{{ lat }}, {{ lon }}], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Add a marker at the step's location
+        var marker = L.marker([{{ lat }}, {{ lon }}]).addTo(mymap)
+            .bindPopup('<b>{{ step.name }}</b><br>{{ step.date }}').openPopup();
+    </script>
+</body>
+</html>

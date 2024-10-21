@@ -1,0 +1,74 @@
+<!-- src/templates/index_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ trip_info.trip_name }}</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>{{ trip_info.trip_name }}</h1>
+    <p id="intro">{{ trip_info.trip_summary }}, {{ trip_info.total_distance|round }}km, {{ trip_info.total_entries }} steps</p>
+    <div id="mapid"></div>
+
+    {% for step in steps_info %}
+        <h2>{{ step.name }} <small>{{ step.date }}</small></h2>
+        <a href="{{ step.slug }}_{{ step.id }}.html">
+            {% if step.photos %}
+                <img class="thumb" src="{{ step.photos[0] }}" alt="{{ step.name }}">
+            {% elif step.videos %}
+                <video controls class="thumb" src="{{ step.videos[0] }}"></video>
+            {% endif %}
+        </a>
+    {% endfor %}
+
+    <script>
+        // Initialize the map
+        var mymap = L.map('mapid').setView([0, 0], 2);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Step coordinates passed from the template
+        var markers = {{ step_coords | safe }};
+        var markerGroup = L.featureGroup();
+
+        // Add markers to the map
+        markers.forEach(function(marker, index) {
+            var number = index + 1;
+            var myIcon = L.divIcon({
+                className: 'numbered-marker',
+                html: '<div class="marker-circle">' + number + '</div>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30],
+                popupAnchor: [0, -30]
+            });
+            var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
+            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.on('click', function() {
+                window.location.href = marker.id + '.html';
+            });
+            markerGroup.addLayer(m);
+        });
+
+        // Add the marker group to the map
+        markerGroup.addTo(mymap);
+
+        // Fit the map view to the markers
+        if (markerGroup.getLayers().length > 0) {
+            mymap.fitBounds(markerGroup.getBounds());
+        }
+
+        // Add route polyline if available
+        var route = {{ route_coords | safe }};
+        if (route.length > 0) {
+            var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
+            mymap.fitBounds(polyline.getBounds());
+        }
+    </script>
+</body>
+</html>

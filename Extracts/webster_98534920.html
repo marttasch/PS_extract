@@ -1,0 +1,65 @@
+<!-- src/templates/step_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Houston Space Center and Galveston</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>Houston Space Center and Galveston</h1>
+    <p id="intro">USA Webster • 2024-04-10 • rain 24.0</p>
+    <div id="mapid"></div>
+
+    <p>Discovery and more ...</p>
+
+    
+        <a href="#img1"><img class="thumb" src="webster_98534920/photos/8b066f77-b009-a79cd96a5f97_53f3f7be-a679-49ea-b191-6d83bcefe970.jpg" alt="Photo 1"></a>
+        <div class="lightbox" id="img1">
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="webster_98534920/photos/8b066f77-b009-a79cd96a5f97_53f3f7be-a679-49ea-b191-6d83bcefe970.jpg" alt="Photo 1">
+            
+                <a href="#img2" class="light-btn btn-next">&#10095;</a>
+            
+        </div>
+    
+        <a href="#img2"><img class="thumb" src="webster_98534920/photos/7a874e0f-afca-a4edb290c0a8_0156622f-e173-4ac2-ad3d-234f4bba1b57.jpg" alt="Photo 2"></a>
+        <div class="lightbox" id="img2">
+            
+                <a href="#img1" class="light-btn btn-prev">&#10094;</a>
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="webster_98534920/photos/7a874e0f-afca-a4edb290c0a8_0156622f-e173-4ac2-ad3d-234f4bba1b57.jpg" alt="Photo 2">
+            
+        </div>
+    
+
+    
+
+    <div class="nav-buttons">
+        
+            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+        
+        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        
+            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+        
+    </div>
+
+     <script>
+        var mymap = L.map('mapid').setView([29.5468712, -95.1361146], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Add a marker at the step's location
+        var marker = L.marker([29.5468712, -95.1361146]).addTo(mymap)
+            .bindPopup('<b>Houston Space Center and Galveston</b><br>2024-04-10').openPopup();
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!-- src/templates/step_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Total eclipse</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <h1>Total eclipse</h1>
+    <p id="intro">USA Llano • 2024-04-09 • partly-cloudy-day 26.0</p>
+    <div id="mapid"></div>
+
+    <p>2024 Sun total eclipse</p>
+
+    
+        <a href="#img1"><img class="thumb" src="llano_98177523/photos/1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg" alt="Photo 1"></a>
+        <div class="lightbox" id="img1">
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="llano_98177523/photos/1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg" alt="Photo 1">
+            
+                <a href="#img2" class="light-btn btn-next">&#10095;</a>
+            
+        </div>
+    
+        <a href="#img2"><img class="thumb" src="llano_98177523/photos/db3cbb86-7021-a2b1fa0d19ad_431d85dc-d231-4d1b-aacc-7d62fed537bc.jpg" alt="Photo 2"></a>
+        <div class="lightbox" id="img2">
+            
+                <a href="#img1" class="light-btn btn-prev">&#10094;</a>
+            
+            <a href="#" class="btn-close">&times;</a>
+            <img src="llano_98177523/photos/db3cbb86-7021-a2b1fa0d19ad_431d85dc-d231-4d1b-aacc-7d62fed537bc.jpg" alt="Photo 2">
+            
+        </div>
+    
+
+    
+        <a href="#vid1"><video class="thumb-vid" src="llano_98177523/videos/f44ce54c-a2cc-7c93802a7c83_1a102faa-c8e7-4eed-115e-3cb7a4a07278.mp4"></video></a>
+        <div class="lightbox" id="vid1">
+            
+            <a href="#" class="btn-close">&times;</a>
+            <video controls src="llano_98177523/videos/f44ce54c-a2cc-7c93802a7c83_1a102faa-c8e7-4eed-115e-3cb7a4a07278.mp4"></video>
+            
+        </div>
+    
+
+    <div class="nav-buttons">
+        
+            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+        
+        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        
+            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+        
+    </div>
+
+     <script>
+        var mymap = L.map('mapid').setView([30.60385422230917, -98.70438914623729], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        // Add a marker at the step's location
+        var marker = L.marker([30.60385422230917, -98.70438914623729]).addTo(mymap)
+            .bindPopup('<b>Total eclipse</b><br>2024-04-09').openPopup();
+    </script>
+</body>
+</html>
