@@ -19,32 +19,29 @@
         <a href="llano_98177523/photos/1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg" class="glightbox">
             <img class="thumb" src="llano_98177523/photos/1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg" alt="Photo 1">
         </a>
-        
     
         <a href="llano_98177523/photos/db3cbb86-7021-a2b1fa0d19ad_431d85dc-d231-4d1b-aacc-7d62fed537bc.jpg" class="glightbox">
             <img class="thumb" src="llano_98177523/photos/db3cbb86-7021-a2b1fa0d19ad_431d85dc-d231-4d1b-aacc-7d62fed537bc.jpg" alt="Photo 2">
         </a>
-        
     
 
     
         <a href="llano_98177523/videos/f44ce54c-a2cc-7c93802a7c83_1a102faa-c8e7-4eed-115e-3cb7a4a07278.mp4" class="glightbox">
             <video class="thumb-vid" src="llano_98177523/videos/f44ce54c-a2cc-7c93802a7c83_1a102faa-c8e7-4eed-115e-3cb7a4a07278.mp4"></video>
         </a>
-        
     
 
     <div class="nav-buttons">
         
-            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+            <span class="nav-button disabled"><i class="nav-icon nav-icon-prev">&#9664;</i>Previous</span>
         
-        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        <a href="index.html" class="nav-button"><i class="nav-icon nav-icon-home">&#8962;</i> Home</a>
         
-            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+            <a href="houston_98394489.html" class="nav-button">Houston <i class="nav-icon nav-icon-next">&#9654;</i></a>
         
     </div>
 
-     <!-- JavaScript code to initialize the map -->
+    <!-- JavaScript code to initialize the map -->
     <script>
         // Initialize the map
         var mymap = L.map('mapid');
@@ -63,7 +60,7 @@
         markers.forEach(function(marker, index) {
             var number = index + 1;
             var iconOptions;
-            if (marker.id === Number('98177523')) {
+            if (marker.id == '98177523') {
                 // Highlight the current step's marker
                 iconOptions = {
                     className: 'numbered-marker current-marker',
@@ -83,12 +80,12 @@
             }
             var myIcon = L.divIcon(iconOptions);
             var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
-            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.bindPopup('<b><a href="' + marker.slug + '_' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
             m.on('click', function() {
-                window.location.href = marker.id + '.html';
+                window.location.href = marker.slug + '_' + marker.id + '.html';
             });
             markerGroup.addLayer(m);
-            if (marker.id === '98177523') {
+            if (marker.id == '98177523') {
                 currentMarker = m;
             }
         });
@@ -113,29 +110,21 @@
         }
     </script>
 
-    <div class="nav-buttons">
-        <!-- Navigation buttons -->
-    </div>
-
-
     <link rel="stylesheet" href="static/css/glightbox.min.css" />
     <script src="static/js/glightbox.min.js"></script>
     <script type="text/javascript">
-		const lightbox = GLightbox({ 
-			selector: '.glightbox',
-			keyboardNavigation: true,
-			touchNavigation: true,
-			loop: true,
-			slideEffect: 'slide',
-			CloseOnOutsideClick: true,
-			draggable: true,
-			zoomable: false,
-
-			height: '8%',
-			width: '8%',
-
-		
-		});
-	  </script>
+        const lightbox = GLightbox({ 
+            selector: '.glightbox',
+            keyboardNavigation: true,
+            touchNavigation: true,
+            loop: true,
+            slideEffect: 'slide',
+            CloseOnOutsideClick: true,
+            draggable: true,
+            zoomable: false,
+            height: '8%',
+            width: '8%',
+        });
+    </script>
 </body>
 </html>

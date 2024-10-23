@@ -19,31 +19,29 @@
         <a href="{{ photo }}" class="glightbox">
             <img class="thumb" src="{{ photo }}" alt="Photo {{ loop.index }}">
         </a>
-        
     {% endfor %}
 
     {% for video in step.videos %}
         <a href="{{ video }}" class="glightbox">
             <video class="thumb-vid" src="{{ video }}"></video>
         </a>
-        
     {% endfor %}
 
     <div class="nav-buttons">
         {% if prev_step %}
-            <a href="{{ prev_step.id }}.html" class="nav-button"><i>&#9664;</i> {{ prev_step.name }}</a>
+            <a href="{{ prev_step.slug }}_{{ prev_step.id }}.html" class="nav-button"><i class="nav-icon nav-icon-prev">&#9664;</i> {{ prev_step.name }}</a>
         {% else %}
-            <span class="nav-button disabled"><i>&#9664;</i> Previous</span>
+            <span class="nav-button disabled"><i class="nav-icon nav-icon-prev">&#9664;</i>Previous</span>
         {% endif %}
-        <a href="index.html" class="nav-button"><i>&#8962;</i> Home</a>
+        <a href="index.html" class="nav-button"><i class="nav-icon nav-icon-home">&#8962;</i> Home</a>
         {% if next_step %}
-            <a href="{{ next_step.id }}.html" class="nav-button">{{ next_step.name }} <i>&#9654;</i></a>
+            <a href="{{ next_step.slug }}_{{ next_step.id }}.html" class="nav-button">{{ next_step.name }} <i class="nav-icon nav-icon-next">&#9654;</i></a>
         {% else %}
-            <span class="nav-button disabled">Next <i>&#9654;</i></span>
+            <span class="nav-button disabled">Next<i class="nav-icon nav-icon-next">&#9654;</i></span>
         {% endif %}
     </div>
 
-     <!-- JavaScript code to initialize the map -->
+    <!-- JavaScript code to initialize the map -->
     <script>
         // Initialize the map
         var mymap = L.map('mapid');
@@ -62,7 +60,7 @@
         markers.forEach(function(marker, index) {
             var number = index + 1;
             var iconOptions;
-            if (marker.id === Number('{{ current_step_id }}')) {
+            if (marker.id == '{{ current_step_id }}') {
                 // Highlight the current step's marker
                 iconOptions = {
                     className: 'numbered-marker current-marker',
@@ -82,12 +80,12 @@
             }
             var myIcon = L.divIcon(iconOptions);
             var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
-            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.bindPopup('<b><a href="' + marker.slug + '_' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
             m.on('click', function() {
-                window.location.href = marker.id + '.html';
+                window.location.href = marker.slug + '_' + marker.id + '.html';
             });
             markerGroup.addLayer(m);
-            if (marker.id === '{{ current_step_id }}') {
+            if (marker.id == '{{ current_step_id }}') {
                 currentMarker = m;
             }
         });
@@ -112,29 +110,21 @@
         }
     </script>
 
-    <div class="nav-buttons">
-        <!-- Navigation buttons -->
-    </div>
-
-
     <link rel="stylesheet" href="static/css/glightbox.min.css" />
     <script src="static/js/glightbox.min.js"></script>
     <script type="text/javascript">
-		const lightbox = GLightbox({ 
-			selector: '.glightbox',
-			keyboardNavigation: true,
-			touchNavigation: true,
-			loop: true,
-			slideEffect: 'slide',
-			CloseOnOutsideClick: true,
-			draggable: true,
-			zoomable: false,
-
-			height: '8%',
-			width: '8%',
-
-		
-		});
-	  </script>
+        const lightbox = GLightbox({ 
+            selector: '.glightbox',
+            keyboardNavigation: true,
+            touchNavigation: true,
+            loop: true,
+            slideEffect: 'slide',
+            CloseOnOutsideClick: true,
+            draggable: true,
+            zoomable: false,
+            height: '8%',
+            width: '8%',
+        });
+    </script>
 </body>
 </html>

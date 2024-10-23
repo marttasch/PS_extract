@@ -95,15 +95,22 @@ def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
         f.write(index_html)
 
     # Generate step pages
-    for step in steps_info:
-         # Prepare data for the template
+    total_steps = len(steps_info)
+    for i, step in enumerate(steps_info):
+        # Determine prev_step and next_step
+        prev_step = steps_info[i - 1] if i > 0 else None
+        next_step = steps_info[i + 1] if i < total_steps - 1 else None
+
+        # Prepare data for the template
         step_html = step_template.render(
             step=step,
             lat=step['lat'],
             lon=step['lon'],
             step_coords=json.dumps(step_coords),
             route_coords=json.dumps(route_coords),
-            current_step_id=step['id']
+            current_step_id=step['id'],
+            prev_step=prev_step,
+            next_step=next_step
         )
         step_filename = f"{step['slug']}_{step['id']}.html"
         with open(os.path.join(extract_dir, step_filename), 'w', encoding='utf-8') as f:

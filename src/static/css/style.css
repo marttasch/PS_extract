@@ -215,18 +215,35 @@ a:hover {
     background-color: var(--primary-color);
     color: #fff;
     padding: 10px 15px;
-    margin: 0 5px;
+    margin: 0 5px 10px;
     border-radius: 5px;
     text-decoration: none;
     font-size: 1em;
     transition: background-color 0.3s;
 }
 
-.nav-button:hover {
-    background-color: var(--accent-color);
+.nav-button.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.nav-button.disabled:hover {
+    background-color: #ccc;
 }
 
-.nav-button i {
-    margin-right: 8px;
+.nav-button:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.nav-icon {
     font-size: 1.2em;
+}
+.nav-icon-prev {
+    margin-right: 8px;
+}
+.nav-icon-home {
+    margin-right: 8px;
+}
+.nav-icon-next {
+    margin-left: 8px;
 }
