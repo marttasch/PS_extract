@@ -71,7 +71,8 @@ def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
             'lon': step['lon'],
             'name': step['name'].replace("'", "\\'"),
             'date': step['date'].replace("'", "\\'"),
-            'id': step['id']
+            'id': step['id'],
+            'slug': step['slug']
         }
         step_coords.append(coord)
 

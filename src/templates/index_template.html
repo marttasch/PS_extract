@@ -48,9 +48,9 @@
                 popupAnchor: [0, -30]
             });
             var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
-            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.bindPopup('<b><a href="' + marker.slug + '_' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
             m.on('click', function() {
-                window.location.href = marker.id + '.html';
+                window.location.href = marker.slug + '_' + marker.id + '.html';
             });
             markerGroup.addLayer(m);
         });
