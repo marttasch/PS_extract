@@ -16,31 +16,17 @@
     <p>{{ step.description }}</p>
 
     {% for photo in step.photos %}
-        <a href="#img{{ loop.index }}"><img class="thumb" src="{{ photo }}" alt="Photo {{ loop.index }}"></a>
-        <div class="lightbox" id="img{{ loop.index }}">
-            {% if loop.index > 1 %}
-                <a href="#img{{ loop.index - 1 }}" class="light-btn btn-prev">&#10094;</a>
-            {% endif %}
-            <a href="#" class="btn-close">&times;</a>
-            <img src="{{ photo }}" alt="Photo {{ loop.index }}">
-            {% if loop.index < step.photos|length %}
-                <a href="#img{{ loop.index + 1 }}" class="light-btn btn-next">&#10095;</a>
-            {% endif %}
-        </div>
+        <a href="{{ photo }}" class="glightbox">
+            <img class="thumb" src="{{ photo }}" alt="Photo {{ loop.index }}">
+        </a>
+        
     {% endfor %}
 
     {% for video in step.videos %}
-        <a href="#vid{{ loop.index }}"><video class="thumb-vid" src="{{ video }}"></video></a>
-        <div class="lightbox" id="vid{{ loop.index }}">
-            {% if loop.index > 1 %}
-                <a href="#vid{{ loop.index - 1 }}" class="light-btn btn-prev">&#10094;</a>
-            {% endif %}
-            <a href="#" class="btn-close">&times;</a>
-            <video controls src="{{ video }}"></video>
-            {% if loop.index < step.videos|length %}
-                <a href="#vid{{ loop.index + 1 }}" class="light-btn btn-next">&#10095;</a>
-            {% endif %}
-        </div>
+        <a href="{{ video }}" class="glightbox">
+            <video class="thumb-vid" src="{{ video }}"></video>
+        </a>
+        
     {% endfor %}
 
     <div class="nav-buttons">
@@ -57,17 +43,98 @@
         {% endif %}
     </div>
 
-     <script>
-        var mymap = L.map('mapid').setView([{{ lat }}, {{ lon }}], 13);
+     <!-- JavaScript code to initialize the map -->
+    <script>
+        // Initialize the map
+        var mymap = L.map('mapid');
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(mymap);
 
-        // Add a marker at the step's location
-        var marker = L.marker([{{ lat }}, {{ lon }}]).addTo(mymap)
-            .bindPopup('<b>{{ step.name }}</b><br>{{ step.date }}').openPopup();
+        // Step coordinates passed from the template
+        var markers = {{ step_coords | safe }};
+        var markerGroup = L.featureGroup();
+        var currentMarker;
+
+        // Add markers to the map
+        markers.forEach(function(marker, index) {
+            var number = index + 1;
+            var iconOptions;
+            if (marker.id === Number('{{ current_step_id }}')) {
+                // Highlight the current step's marker
+                iconOptions = {
+                    className: 'numbered-marker current-marker',
+                    html: '<div class="marker-circle">' + number + '</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -30]
+                };
+            } else {
+                iconOptions = {
+                    className: 'numbered-marker',
+                    html: '<div class="marker-circle">' + number + '</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -30]
+                };
+            }
+            var myIcon = L.divIcon(iconOptions);
+            var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
+            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.on('click', function() {
+                window.location.href = marker.id + '.html';
+            });
+            markerGroup.addLayer(m);
+            if (marker.id === '{{ current_step_id }}') {
+                currentMarker = m;
+            }
+        });
+
+        // Add the marker group to the map
+        markerGroup.addTo(mymap);
+
+        // Add route polyline if available
+        var route = {{ route_coords | safe }};
+        if (route.length > 0) {
+            var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
+        }
+
+        // Zoom the map to the current step with some padding
+        if (currentMarker) {
+            var bounds = L.latLngBounds([currentMarker.getLatLng()]);
+            bounds = bounds.pad(0.1); // Adjust the padding as needed
+            mymap.fitBounds(bounds);
+        } else {
+            // If current marker not found, center map on current step
+            mymap.setView([{{ lat }}, {{ lon }}], 13);
+        }
     </script>
+
+    <div class="nav-buttons">
+        <!-- Navigation buttons -->
+    </div>
+
+
+    <link rel="stylesheet" href="static/css/glightbox.min.css" />
+    <script src="static/js/glightbox.min.js"></script>
+    <script type="text/javascript">
+		const lightbox = GLightbox({ 
+			selector: '.glightbox',
+			keyboardNavigation: true,
+			touchNavigation: true,
+			loop: true,
+			slideEffect: 'slide',
+			CloseOnOutsideClick: true,
+			draggable: true,
+			zoomable: false,
+
+			height: '8%',
+			width: '8%',
+
+		
+		});
+	  </script>
 </body>
 </html>

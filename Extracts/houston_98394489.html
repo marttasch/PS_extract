@@ -16,25 +16,15 @@
     <p>Rain in Houston</p>
 
     
-        <a href="#img1"><img class="thumb" src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Photo 1"></a>
-        <div class="lightbox" id="img1">
-            
-            <a href="#" class="btn-close">&times;</a>
-            <img src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Photo 1">
-            
-                <a href="#img2" class="light-btn btn-next">&#10095;</a>
-            
-        </div>
+        <a href="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" class="glightbox">
+            <img class="thumb" src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Photo 1">
+        </a>
+        
     
-        <a href="#img2"><img class="thumb" src="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" alt="Photo 2"></a>
-        <div class="lightbox" id="img2">
-            
-                <a href="#img1" class="light-btn btn-prev">&#10094;</a>
-            
-            <a href="#" class="btn-close">&times;</a>
-            <img src="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" alt="Photo 2">
-            
-        </div>
+        <a href="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" class="glightbox">
+            <img class="thumb" src="houston_98394489/photos/7b37e3a6-89c6-542117474edc_112c793c-ce3d-49f7-8277-d8151748d8a1.jpg" alt="Photo 2">
+        </a>
+        
     
 
     
@@ -49,17 +39,98 @@
         
     </div>
 
-     <script>
-        var mymap = L.map('mapid').setView([29.7589382, -95.3676974], 13);
+     <!-- JavaScript code to initialize the map -->
+    <script>
+        // Initialize the map
+        var mymap = L.map('mapid');
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(mymap);
 
-        // Add a marker at the step's location
-        var marker = L.marker([29.7589382, -95.3676974]).addTo(mymap)
-            .bindPopup('<b>Houston</b><br>2024-04-10').openPopup();
+        // Step coordinates passed from the template
+        var markers = [{"lat": 30.60385422230917, "lon": -98.70438914623729, "name": "Total eclipse", "date": "2024-04-09", "id": 98177523}, {"lat": 29.7589382, "lon": -95.3676974, "name": "Houston", "date": "2024-04-10", "id": 98394489}, {"lat": 29.5468712, "lon": -95.1361146, "name": "Houston Space Center and Galveston", "date": "2024-04-10", "id": 98534920}];
+        var markerGroup = L.featureGroup();
+        var currentMarker;
+
+        // Add markers to the map
+        markers.forEach(function(marker, index) {
+            var number = index + 1;
+            var iconOptions;
+            if (marker.id === Number('98394489')) {
+                // Highlight the current step's marker
+                iconOptions = {
+                    className: 'numbered-marker current-marker',
+                    html: '<div class="marker-circle">' + number + '</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -30]
+                };
+            } else {
+                iconOptions = {
+                    className: 'numbered-marker',
+                    html: '<div class="marker-circle">' + number + '</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30],
+                    popupAnchor: [0, -30]
+                };
+            }
+            var myIcon = L.divIcon(iconOptions);
+            var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
+            m.bindPopup('<b><a href="' + marker.id + '.html">' + marker.name + '</a></b><br>' + marker.date);
+            m.on('click', function() {
+                window.location.href = marker.id + '.html';
+            });
+            markerGroup.addLayer(m);
+            if (marker.id === '98394489') {
+                currentMarker = m;
+            }
+        });
+
+        // Add the marker group to the map
+        markerGroup.addTo(mymap);
+
+        // Add route polyline if available
+        var route = [[30.4865192, -98.7039201], [30.60380412193019, -98.70417642127548], [30.6106950211566, -98.69581780026604], [30.610649685929992, -98.69584142027053], [30.610788963786376, -98.69579458493813], [30.6107816, -98.6959353], [30.6116728, -98.7020636], [30.421574288712378, -98.73702852449833], [30.290534147544605, -98.84178448764969], [30.2739886, -98.8704292], [30.2609911, -98.8717623], [29.9673687, -98.9140596], [29.7120189, -99.0582288], [29.386602019084915, -99.1168605649863], [29.2352163, -99.1343858], [28.68194835112661, -99.18151556066967], [28.6790251, -99.1801011], [28.6789636, -99.1801745], [28.6831616, -99.1779919], [28.9181211, -99.1055583], [29.1143044, -98.92497], [29.2677336, -98.6936783], [29.407628, -98.5095416], [29.4241194, -98.4842035], [29.4250287, -98.4916574], [29.4252572, -98.4969807], [29.4241516, -98.4932469], [29.4222291, -98.4880514], [29.606558, -97.8850888], [29.6517838, -97.5961494], [29.6690108, -97.3038994], [29.6931877, -97.0178102], [29.6931283, -97.0174705], [29.692598, -97.0143827], [29.6934569, -96.9017016], [29.6904744, -96.7186038], [29.6930603, -96.6109827], [29.5420914, -95.9721453], [29.5320994, -95.8065911], [29.7258444, -95.4703238], [29.738772, -95.4186595], [29.75483989922221, -95.41710257610349], [29.7607994, -95.3874185], [29.7575106, -95.3695499], [29.7601175, -95.3622199], [29.7575647, -95.3704908], [29.6965869, -95.2893808], [29.665495, -95.2601138], [29.5422966, -95.1378047], [29.546867315089667, -95.1366449152377], [29.5498281, -95.1295262], [29.5523577, -95.0976581], [29.5482256, -95.0997388], [29.4004732, -95.0311175], [29.3285066, -94.9435198], [29.3276811, -94.9322054], [29.2909865, -94.8766064], [29.2933203, -94.7962138], [29.2973963, -94.7986076], [29.3025003, -94.7744702], [29.2524415, -94.8513108], [29.1454007, -95.0313293], [29.0796342, -95.1316728]];
+        if (route.length > 0) {
+            var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
+        }
+
+        // Zoom the map to the current step with some padding
+        if (currentMarker) {
+            var bounds = L.latLngBounds([currentMarker.getLatLng()]);
+            bounds = bounds.pad(0.1); // Adjust the padding as needed
+            mymap.fitBounds(bounds);
+        } else {
+            // If current marker not found, center map on current step
+            mymap.setView([29.7589382, -95.3676974], 13);
+        }
     </script>
+
+    <div class="nav-buttons">
+        <!-- Navigation buttons -->
+    </div>
+
+
+    <link rel="stylesheet" href="static/css/glightbox.min.css" />
+    <script src="static/js/glightbox.min.js"></script>
+    <script type="text/javascript">
+		const lightbox = GLightbox({ 
+			selector: '.glightbox',
+			keyboardNavigation: true,
+			touchNavigation: true,
+			loop: true,
+			slideEffect: 'slide',
+			CloseOnOutsideClick: true,
+			draggable: true,
+			zoomable: false,
+
+			height: '8%',
+			width: '8%',
+
+		
+		});
+	  </script>
 </body>
 </html>

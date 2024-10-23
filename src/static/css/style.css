@@ -188,6 +188,11 @@ a:hover {
     border: 2px solid #fff;
 }
 
+/* Styles for current step marker */
+.numbered-marker.current-marker .marker-circle {
+    background-color: var(--accent-color); /* Use accent color to highlight */
+}
+
 /* Map container styling */
 #mapid {
     height: 600px;

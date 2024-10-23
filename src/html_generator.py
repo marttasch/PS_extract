@@ -96,7 +96,15 @@ def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
 
     # Generate step pages
     for step in steps_info:
-        step_html = step_template.render(step=step, lat=step['lat'], lon=step['lon'])
+         # Prepare data for the template
+        step_html = step_template.render(
+            step=step,
+            lat=step['lat'],
+            lon=step['lon'],
+            step_coords=json.dumps(step_coords),
+            route_coords=json.dumps(route_coords),
+            current_step_id=step['id']
+        )
         step_filename = f"{step['slug']}_{step['id']}.html"
         with open(os.path.join(extract_dir, step_filename), 'w', encoding='utf-8') as f:
             f.write(step_html)
