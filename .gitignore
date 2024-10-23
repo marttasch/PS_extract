@@ -1,0 +1,6 @@
+# python
+*.pyc pycache/ venv/ *.egg-info/ dist/ build/ .idea/ .vscode/ *.pyo *.pyd *.pyw *.pyz *.pyzw *.ipynb_checkpoints/
+src/pycache/
+
+__pycache__/
+__pycache__/*/
