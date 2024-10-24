@@ -10,25 +10,45 @@
 <body>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <h1>USA 2024</h1>
-    <p id="intro">Sample trip, 560.0km, 3 steps</p>
+    <div class="trip-info">
+        <span id="intro">Sample trip, 560.0km, 3 steps</span>
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+        <span></span>
+    </div>
+
+    <!-- Map container -->
     <div id="mapid"></div>
+    <!-- End -->
 
     
-        <h2>Total eclipse <small>2024-04-09</small></h2>
+        <h2>🇺🇸 Total eclipse <small>2024-04-09</small></h2>
         <a href="llano_98177523.html">
             
                 <img class="thumb" src="llano_98177523/photos/1faa3490-8fc9-4ecaeb2fa21f_2859dabf-b5f5-481d-baa3-3272c16b0c68.jpg" alt="Total eclipse">
             
         </a>
     
-        <h2>Houston <small>2024-04-10</small></h2>
+        <h2>🇺🇸 Houston <small>2024-04-10</small></h2>
         <a href="houston_98394489.html">
             
                 <img class="thumb" src="houston_98394489/photos/f1d380aa-876a-f9a457a87202_ea2b2b20-58e8-409d-1297-96752bffc1e6.jpg" alt="Houston">
             
         </a>
     
-        <h2>Houston Space Center and Galveston <small>2024-04-10</small></h2>
+        <h2>🇺🇸 Houston Space Center and Galveston <small>2024-04-11</small></h2>
         <a href="webster_98534920.html">
             
                 <img class="thumb" src="webster_98534920/photos/8b066f77-b009-a79cd96a5f97_53f3f7be-a679-49ea-b191-6d83bcefe970.jpg" alt="Houston Space Center and Galveston">
@@ -46,7 +66,7 @@
         }).addTo(mymap);
 
         // Step coordinates passed from the template
-        var markers = [{"lat": 30.60385422230917, "lon": -98.70438914623729, "name": "Total eclipse", "date": "2024-04-09", "id": 98177523, "slug": "llano"}, {"lat": 29.7589382, "lon": -95.3676974, "name": "Houston", "date": "2024-04-10", "id": 98394489, "slug": "houston"}, {"lat": 29.5468712, "lon": -95.1361146, "name": "Houston Space Center and Galveston", "date": "2024-04-10", "id": 98534920, "slug": "webster"}];
+        var markers = [{"lat": 30.60385422230917, "lon": -98.70438914623729, "name": "Total eclipse", "date": "2024-04-09", "id": 98177523, "slug": "llano"}, {"lat": 29.7589382, "lon": -95.3676974, "name": "Houston", "date": "2024-04-10", "id": 98394489, "slug": "houston"}, {"lat": 29.5468712, "lon": -95.1361146, "name": "Houston Space Center and Galveston", "date": "2024-04-11", "id": 98534920, "slug": "webster"}];
         var markerGroup = L.featureGroup();
 
         // Add markers to the map

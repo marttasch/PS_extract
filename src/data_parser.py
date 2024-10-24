@@ -44,7 +44,6 @@ def parse_data(trip_data, data_dir, extract_dir, verbose=False):
 
         if step['country'] in country_dict:
             step['flag'] = country_dict[step['country']]
-            print(step['flag'])
         else: 
             print(f"DEBUG: {location_country} not in country_dict")
             print(f"! Flag for country '{location_country}' not present !")
