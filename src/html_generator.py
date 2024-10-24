@@ -4,6 +4,7 @@ import os
 import json
 import shutil
 from jinja2 import Environment, FileSystemLoader
+from collections import OrderedDict  # Import OrderedDict to maintain order
 
 def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
     """
@@ -32,15 +33,18 @@ def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
     # Copy static assets to the Extracts folder
     copy_static_assets(static_src_dir, extract_dir)
 
-    # Process steps_info to copy media files and update paths
+    # Process media files for steps
     process_media_files(steps_info, extract_dir)
 
     # Prepare step coordinates and route data for maps
     step_coords = prepare_step_coords(steps_info)
     route_coords = prepare_route_coords(loc_data)
 
+    # Collect unique countries and their flags
+    countries_visited = collect_countries(steps_info)
+
     # Generate index.html
-    generate_index_html(index_template, trip_info, steps_info, step_coords, route_coords, extract_dir)
+    generate_index_html(index_template, trip_info, steps_info, step_coords, route_coords, countries_visited, extract_dir)
 
     # Generate step pages
     generate_step_pages(step_template, steps_info, step_coords, route_coords, extract_dir)
@@ -120,16 +124,30 @@ def prepare_route_coords(loc_data):
             route_coords.append([lat, lon])
     return route_coords
 
-def generate_index_html(index_template, trip_info, steps_info, step_coords, route_coords, extract_dir):
+def collect_countries(steps_info):
     """
-    Generates the index.html file with the trip overview and map.
+    Collects unique countries visited and their flags, maintaining the order of first visit.
+    """
+    from collections import OrderedDict
+    countries_visited = OrderedDict()
+    for step in steps_info:
+        country = step['country']
+        flag = step.get('flag', '')
+        if country not in countries_visited:
+            countries_visited[country] = flag
+    return countries_visited
+
+def generate_index_html(index_template, trip_info, steps_info, step_coords, route_coords, countries_visited, extract_dir):
+    """
+    Generates the index.html file with the trip overview, map, and country flags.
     """
     # Render the index.html template
     index_html = index_template.render(
         trip_info=trip_info,
         steps_info=steps_info,
         step_coords=json.dumps(step_coords),
-        route_coords=json.dumps(route_coords)
+        route_coords=json.dumps(route_coords),
+        countries_visited=countries_visited
     )
 
     # Write the rendered HTML to the index.html file

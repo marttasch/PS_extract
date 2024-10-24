@@ -247,3 +247,16 @@ a:hover {
 .nav-icon-next {
     margin-left: 8px;
 }
+
+/* Existing styles */
+
+/* Country flags styling */
+#country-flags {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.country-flag {
+    font-size: 2em;
+    margin: 0 5px;
+}

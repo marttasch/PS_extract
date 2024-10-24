@@ -11,6 +11,14 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <h1>{{ trip_info.trip_name }}</h1>
     <p id="intro">{{ trip_info.trip_summary }}, {{ trip_info.total_distance|round }}km, {{ trip_info.total_entries }} steps</p>
+    
+    <!-- Display country flags -->
+    <div id="country-flags">
+        {% for country, flag in countries_visited.items() %}
+            <span class="country-flag">{{ flag }}</span>
+        {% endfor %}
+    </div>
+
     <div id="mapid"></div>
 
     {% for step in steps_info %}

@@ -11,7 +11,6 @@ country_dict = { #these countries denominations have been tested as used by PS i
 # additional denominations not identified as used by PS
 "American Samoa":"\U0001F1E6\U0001F1F8","Aruba":"\U0001F1E6\U0001F1FC","Åland Islands":"\U0001F1E6\U0001F1FD","Bonaire, Sint Eustatius and Saba":"\U0001F1E7\U0001F1F6","Bouvet Island":"\U0001F1E7\U0001F1FB","Cocos (Keeling) Islands":"\U0001F1E8\U0001F1E8","Christmas Island":"\U0001F1E8\U0001F1FD","French Guiana":"\U0001F1EC\U0001F1EB","Guadeloupe":"\U0001F1EC\U0001F1F5","Guam":"\U0001F1EC\U0001F1FA","Heard Island and Mcdonald Islands":"\U0001F1ED\U0001F1F2","Macao":"\U0001F1F2\U0001F1F4","Northern Mariana Islands":"\U0001F1F2\U0001F1F5","Martinique":"\U0001F1F2\U0001F1F6","French Polynesia":"\U0001F1F5\U0001F1EB","Saint Pierre and Miquelon":"\U0001F1F5\U0001F1F2","Réunion":"\U0001F1F7\U0001F1EA","Svalbard and Jan Mayen":"\U0001F1F8\U0001F1EF","United States Minor Outlying Islands":"\U0001F1FA\U0001F1F2","Wallis and Futuna":"\U0001F1FC\U0001F1EB","Mayotte":"\U0001F1FE\U0001F1F9"}
  
-
 def get_modif_time(entry):
     return entry.stat().st_mtime
 
@@ -44,9 +43,10 @@ def parse_data(trip_data, data_dir, extract_dir, verbose=False):
 
         if step['country'] in country_dict:
             step['flag'] = country_dict[step['country']]
-        else: 
-            print(f"DEBUG: {location_country} not in country_dict")
-            print(f"! Flag for country '{location_country}' not present !")
+        else:
+            print(f"DEBUG: {step['country']} not in country_dict")
+            print(f"! Flag for country '{step['country']}' not present !")
+            step['flag'] = ''  # Assign an empty string if flag not found
 
         step['weather'] = entry.get('weather_condition', '')
         step['temperature'] = entry.get('weather_temperature', '')
@@ -56,6 +56,7 @@ def parse_data(trip_data, data_dir, extract_dir, verbose=False):
         else:
             print(f"DEBUG: {step['weather']} not in weather_dict")
             print(f"! Emoji for weather '{step['weather']}' not present !")
+            step['weather_emoji'] = ''  # Assign an empty string if emoji not found
 
         step['description'] = entry['description'] if entry['description'] else ''
 
