@@ -1,0 +1,31 @@
+version: '3'
+services:
+  jekyll:
+    image: marttasch/jekyll:latest
+    container_name: my_jekyll_container
+    command: jekyll build --watch
+    volumes:
+      - ./jekyll/:/srv/jekyll
+      - jekyll_bundle:/home/user/
+    networks:
+      - web
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./jekyll/_site:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+      # Uncomment the following line if you want to use basic auth
+      #- ./.htpasswd:/etc/nginx/.htpasswd:ro   # create .htpasswd file with htpasswd -c .htpasswd username
+    networks:
+      - web
+    ports:
+      - "8080:80"
+
+volumes:
+  jekyll_bundle:
+
+networks:
+  web:
+    external: false

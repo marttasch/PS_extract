@@ -1,0 +1,17 @@
+---
+layout: default
+--- 
+<h1>My Trips</h1>
+
+{% assign trips = site.trips | group_by_exp: "trip", "trip.dir" | sort: "name" %}
+{% for trip in trips %}
+{% assign steps = trip.items | sort: "date" %}
+{% for step in steps %}
+<div class="trip">
+  <h3>{{ step.title }}</h3>
+  <p>{{ step.date }}</p>
+  <p>{{ step.summary }}</p>
+  <a href="{{ step.url }}">Read more</a>
+</div>
+{% endfor %}
+{% endfor %}

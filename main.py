@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import json
 from src.data_parser import parse_data
-from src.html_generator import generate_html
+from src.output_generator import generate_html, generate_jekyll
 from src.email_utils import email_steps, send_trip_email
 
 # Global parameters
@@ -21,6 +21,7 @@ map_file = os.path.join(data_dir, 'locations.json')
 # Set all specific run modes of the script to False; will be modified through command-line arguments
 mail = False
 local = False
+jekyll = False
 interactive = False
 verbose = False
 exclude = False
@@ -33,6 +34,7 @@ Usage: python main.py [options]
 Options:
     -v, --verbose                  Add additional information in the generated text file
     -l, --local                    Generate local HTML files to navigate the steps
+    -j, --jekyll                   Generate Jekyll-compatible markdown files
     -e, --email address@domain.com Send emails containing descriptions, images, and videos to the given address
     -i, --interactive              Display an analysis and interactively ask what to do for each step
     -x, --exclude                  Exclude the first and last steps from generated maps
@@ -40,7 +42,7 @@ Options:
 """)
 
 def main():
-    global mail, local, interactive, verbose, exclude, dest_email
+    global mail, local, jekyll, interactive, verbose, exclude, dest_email
 
     # Analyze command-line arguments
     args = sys.argv[1:]
@@ -60,6 +62,9 @@ def main():
         elif arg in ('-l', '--local'):
             local = True
             print("Local HTML option activated.")
+        elif arg in ('-j', '--jekyll'):
+            jekyll = True
+            print("Jekyll option activated.")
         elif arg in ('-i', '--interactive'):
             interactive = True
             print("Interactive option activated.")
@@ -109,6 +114,8 @@ def main():
     # Generate outputs
     if local:
         generate_html(trip_data, steps_info, loc_data, extract_dir, verbose)
+    if jekyll:
+        generate_jekyll(trip_data, steps_info, loc_data, extract_dir, verbose)
     if mail or interactive:
         email_steps(trip_data, steps_info, dest_email, interactive)
 

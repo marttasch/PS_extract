@@ -1,0 +1,12 @@
+title: "My Travel Blog"
+description: "A blog documenting my travels."
+baseurl: "" # e.g., "/blog" if hosted on a subpath
+url: "https://yourdomain.com" # Replace with your site's URL
+
+markdown: kramdown
+theme: minima
+
+collections:
+  trips:
+    output: true
+    permalink: /trips/:path/

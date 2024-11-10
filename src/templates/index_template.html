@@ -24,7 +24,7 @@
     {% for step in steps_info %}
         <h2>{{ step.name }} <small>{{ step.date }}</small></h2>
         <a href="{{ step.slug }}_{{ step.id }}.html">
-            {% if step.photos %}
+            {% if step.photos %}index
                 <img class="thumb" src="{{ step.photos[0] }}" alt="{{ step.name }}">
             {% elif step.videos %}
                 <video controls class="thumb" src="{{ step.videos[0] }}"></video>

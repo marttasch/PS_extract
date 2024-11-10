@@ -1,0 +1,20 @@
+services:
+  jekyll:
+    image: marttasch/jekyll:latest # This is image which built in step 2
+    container_name: jekyll_polarsteps
+    user: 1000:1000
+    #command: jekyll new .
+    #command: /bin/sh -c "bundle install && bundle exec jekyll serve --trace --force_polling --livereload -H 0.0.0.0"
+    command: /bin/sh -c "bundle exec jekyll serve --trace --force_polling --livereload -H 0.0.0.0"
+    volumes:
+      - ./jekyll_travelblog/:/srv/jekyll
+      - /home/user/   # anonymous volume for gems
+    ports:
+      - "4000:4000"
+      - "35729:35729"   # livereload
+    environment:
+      - JEKYLL_ENV=development
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    restart: unless-stopped
