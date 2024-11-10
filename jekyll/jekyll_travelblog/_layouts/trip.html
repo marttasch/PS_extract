@@ -4,95 +4,96 @@ layout: default
 
 <!-- Display Trip Info -->
 <h1>{{ page.title }}</h1>
-<p id="intro" >{{ page.summary }}, {{ page.total_distance |round }} km, {{ page.total_entries }} steps</p>
+<p id="intro">{{ page.summary }}, {{ page.total_distance | round }} km, {{ page.total_entries }} steps</p>
 
 <!-- Display country flags -->
 <div id="country-flags">
     {% for country in page.countries_visited %}
-        {{country}}
+        {{ country }}
         <span class="country-flag">{{ page.countries_visited[country] }}</span>
     {% endfor %}
 </div>
 
-<!-- Display Map -->
-<div id="mapid"></div>
+<!-- Content Container -->
+<div class="content-container">
+    <!-- Map -->
+    <div id="mapid"></div>
 
-<!-- Display Steps -->
-<h2>Reiseschritte</h2>
-
-{% assign trip_dir = page.dir %}
-{% assign steps = site.trips | where_exp: "item", "item.dir == trip_dir and item.name != 'index.md'" | sort: "date" %}
-{% for step in steps %}
-    <h3>{{ step.title }} <small>{{ step.date | date: "%d.%m.%Y" }}</small></h3>
-    <a href="{{ step.url }}">
-        {% if step.photos %}
-            <img class="thumb" src="{{ step.photos[0] }}" alt="{{ step.title }}">
-        {% elsif step.videos %}
-            <video controls class="thumb" src="{{ step.videos[0] }}"></video>
-        {% endif %}
-    </a>
-{% endfor %}
+    <!-- Timeline -->
+    <div class="timeline">
+        {% assign trip_dir = page.dir %}
+        {% assign steps = site.trips | where_exp: "item", "item.dir == trip_dir and item.name != 'index.md'" | sort: "date" %}
+        {% for step in steps %}
+            <div class="timeline-step">
+                <a href="{{ step.url }}" class="card" style="background-image: url('{{ step.photos[0] }}');">
+                    <div class="card-content">
+                        <h3>{{ step.title }}</h3>
+                        <small>{{ step.date | date: "%d.%m.%Y" }}</small>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 <script>
-  // JavaScript code to initialize the map with steps
-  // Use page.step_coords and page.route_coords
-</script>
+    // Initialize the map
+    var mymap = L.map('mapid').setView([0, 0], 2);
 
- <script>
-        // Karte initialisieren
-        var mymap = L.map('mapid').setView([0, 0], 2);
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Kartendaten © OpenStreetMap-Mitwirkende'
+    }).addTo(mymap);
 
-        // OpenStreetMap-Kacheln hinzufügen
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Kartendaten © OpenStreetMap-Mitwirkende'
-        }).addTo(mymap);
+    // Step coordinates
+    var markers = [
+    {% for step in steps %}
+        {
+            lat: {{ step.lat }},
+            lon: {{ step.lon }},
+            title: "{{ step.title | escape }}",
+            date: "{{ step.date | date: "%d.%m.%Y" }}",
+            url: "{{ step.url }}"
+        }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+    ];
+    var markerGroup = L.featureGroup();
 
-        // Schrittkoordinaten
-        var markers = [
-        {% for step in steps %}
-            {
-                lat: {{ step.lat }},
-                lon: {{ step.lon }},
-                title: "{{ step.title | escape }}",
-                date: "{{ step.date | date: "%d.%m.%Y" }}",
-                url: "{{ step.url }}"
-            }{% unless forloop.last %},{% endunless %}
-        {% endfor %}
-        ];
-        var markerGroup = L.featureGroup();
-
-        // Marker hinzufügen
-        markers.forEach(function(marker, index) {
-            var number = index + 1;
-            var myIcon = L.divIcon({
-                className: 'numbered-marker',
-                html: '<div class="marker-circle">' + number + '</div>',
-                iconSize: [30, 30],
-                iconAnchor: [15, 30],
-                popupAnchor: [0, -30]
-            });
-            var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
-            m.bindPopup('<b><a href="' + marker.url + '">' + marker.title + '</a></b><br>' + marker.date);
-            m.on('click', function() {
-                window.location.href = marker.url;
-            });
-            markerGroup.addLayer(m);
+    // Add markers
+    markers.forEach(function(marker, index) {
+        var number = index + 1;
+        var myIcon = L.divIcon({
+            className: 'numbered-marker',
+            html: '<div class="marker-circle">' + number + '</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
         });
+        var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
+        m.bindPopup('<b><a href="' + marker.url + '">' + marker.title + '</a></b><br>' + marker.date);
+        m.on('click', function() {
+            window.location.href = marker.url;
+        });
+        markerGroup.addLayer(m);
+    });
 
-        // Markergruppe zur Karte hinzufügen
-        markerGroup.addTo(mymap);
+    // Add marker group to the map
+    markerGroup.addTo(mymap);
 
-        // Kartenausschnitt an die Marker anpassen
-        if (markerGroup.getLayers().length > 0) {
-            mymap.fitBounds(markerGroup.getBounds());
-        }
+    // Fit the map to the markers
+    if (markerGroup.getLayers().length > 0) {
+        mymap.fitBounds(markerGroup.getBounds());
+    }
 
-        // Route hinzufügen
-        var route = {{ page.route_coords | jsonify }};
-        if (route.length > 0) {
-            var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
-            mymap.fitBounds(polyline.getBounds());
-        }
-    </script>
+    // Add route
+    var route = {{ page.route_coords | jsonify }};
+    if (route.length > 0) {
+        var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
+        mymap.fitBounds(polyline.getBounds());
+    }
 
-
+    // Invalidate map size on window resize
+    window.addEventListener('resize', function(){
+        mymap.invalidateSize();
+    });
+</script>
