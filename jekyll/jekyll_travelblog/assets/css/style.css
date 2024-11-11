@@ -67,6 +67,11 @@ a:hover {
     color: var(--accent-color);
 }
 
+iconify-icon {
+    width: 1em;
+    height: 1em;
+}
+
 /* Content Container */
 .content-container {
     flex: 1;

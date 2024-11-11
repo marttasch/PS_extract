@@ -38,8 +38,9 @@ def parse_data(trip_data, data_dir, extract_dir, verbose=False):
         step['location_name'] = location['name']
         step['lat'] = location['lat']
         step['lon'] = location['lon']
-        step['country'] = location['detail']
-        step['full_detail'] = location['full_detail']
+        step['country'] = location['detail']   # country name
+        step['full_detail'] = location['full_detail']   # country and province name
+        step['country_code'] = location['country_code']
 
         if step['country'] in country_dict:
             step['flag'] = country_dict[step['country']]

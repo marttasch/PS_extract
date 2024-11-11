@@ -137,12 +137,17 @@ def collect_countries(steps_info):
     """
     from collections import OrderedDict
     countries_visited = OrderedDict()
+    countrieCode_visited = []
+
     for step in steps_info:
         country = step['country']
         flag = step.get('flag', '')
+        code = step.get('country_code')
         if country not in countries_visited:
             countries_visited[country] = flag
-    return countries_visited
+            countrieCode_visited.append(code)
+
+    return countries_visited, countrieCode_visited
 
 def generate_index_html(index_template, trip_info, steps_info, step_coords, route_coords, countries_visited, extract_dir):
     """
@@ -233,6 +238,8 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
         }
         steps_list.append(step_info)
 
+    visited_countries, visited_countrieCodes = collect_countries(steps_info)
+
     front_matter = {
         'layout': 'trip',
         'title': trip_data['name'].strip(),
@@ -244,7 +251,8 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
         'steps': steps_list,
         'step_coords': prepare_step_coords(steps_info),
         'route_coords': prepare_route_coords(loc_data),
-        'countries_visited': collect_countries(steps_info)
+        'countries_visited': dict(visited_countries),
+        'countrie_codes_visited': visited_countrieCodes
     }
 
     content = '---\n' + yaml.dump(front_matter, sort_keys=False) + '---\n'
@@ -304,6 +312,7 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
         'lon': step['lon'],
         'country': step['country'],
         'flag': step.get('flag', ''),
+        'country_code': step.get('country_code'),
         'weather': step.get('weather', ''),
         'weather_emoji': step.get('weather_emoji', ''),
         'description': step['description'],

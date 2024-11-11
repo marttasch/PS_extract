@@ -8,9 +8,8 @@ layout: default
 
 <!-- Display country flags -->
 <div id="country-flags">
-    {% for country in page.countries_visited %}
-        {{ country }}
-        <span class="country-flag">{{ page.countries_visited[country] }}</span>
+    {% for code in page.countrie_codes_visited %}
+        <iconify-icon icon="flag:{{ code | downcase }}-4x3" width="1.2rem" height="1.2rem"></iconify-icon>
     {% endfor %}
 </div>
 
@@ -28,6 +27,7 @@ layout: default
                 <a href="{{ step.url }}" class="card" style="background-image: url('{{ step.photos[0] }}');">
                     <div class="card-content">
                         <h3>{{ step.title }}</h3>
+                        <iconify-icon icon="flag:{{ step.country_code | downcase }}-4x3" width="1.2rem" height="1.2rem"></iconify-icon> 
                         <small>{{ step.date | date: "%d.%m.%Y" }}</small>
                     </div>
                 </a>

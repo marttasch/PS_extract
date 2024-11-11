@@ -168,7 +168,8 @@ route_coords:
   - -95.0313293
 - - 29.0796342
   - -95.1316728
-countries_visited: !!python/object/apply:collections.OrderedDict
-- - - USA
-    - "\U0001F1FA\U0001F1F8"
+countries_visited:
+  USA: "\U0001F1FA\U0001F1F8"
+countrie_codes_visited:
+- US
 ---
