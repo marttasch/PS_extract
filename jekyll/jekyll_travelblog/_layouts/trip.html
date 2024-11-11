@@ -15,7 +15,6 @@ layout: default
     </div>
 </div>
 
-
 <!-- Content Container -->
 <div class="content-container">
     <!-- Map -->
@@ -26,7 +25,7 @@ layout: default
         {% assign trip_dir = page.dir %}
         {% assign steps = site.trips | where_exp: "item", "item.dir == trip_dir and item.name != 'index.md'" | sort: "date" %}
         {% for step in steps %}
-            <div class="timeline-step">
+            <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <a href="{{ step.url }}" class="card" style="background-image: url('{{ step.photos[0] }}');">
                     <div class="card-content">
                         <h3>{{ step.title }}</h3>
@@ -39,6 +38,9 @@ layout: default
     </div>
 </div>
 
+<!-- Include Iconify for flag icons (if not already included) -->
+<script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
+
 <script>
     // Initialize the map
     var mymap = L.map('mapid').setView([0, 0], 2);
@@ -49,36 +51,38 @@ layout: default
     }).addTo(mymap);
 
     // Step coordinates
-    var markers = [
-    {% for step in steps %}
-        {
-            lat: {{ step.lat }},
-            lon: {{ step.lon }},
-            title: "{{ step.title | escape }}",
-            date: "{{ step.date | date: "%d.%m.%Y" }}",
-            url: "{{ step.url }}"
-        }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-    ];
+    var markers = [];
     var markerGroup = L.featureGroup();
 
     // Add markers
-    markers.forEach(function(marker, index) {
-        var number = index + 1;
-        var myIcon = L.divIcon({
-            className: 'numbered-marker',
-            html: '<div class="marker-circle">' + number + '</div>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30],
-            popupAnchor: [0, -30]
-        });
-        var m = L.marker([marker.lat, marker.lon], {icon: myIcon});
-        m.bindPopup('<b><a href="' + marker.url + '">' + marker.title + '</a></b><br>' + marker.date);
-        m.on('click', function() {
-            window.location.href = marker.url;
-        });
-        markerGroup.addLayer(m);
-    });
+    {% for step in steps %}
+        (function(){
+            var index = {{ forloop.index0 }};
+            var markerData = {
+                lat: {{ step.lat }},
+                lon: {{ step.lon }},
+                title: "{{ step.title | escape }}",
+                date: "{{ step.date | date: "%d.%m.%Y" }}",
+                url: "{{ step.url }}"
+            };
+            var myIcon = L.divIcon({
+                className: 'numbered-marker',
+                html: '<div class="marker-circle">' + (index + 1) + '</div>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30],
+                popupAnchor: [0, -30]
+            });
+            var m = L.marker([markerData.lat, markerData.lon], {icon: myIcon});
+            m.bindPopup('<b><a href="' + markerData.url + '">' + markerData.title + '</a></b><br>' + markerData.date);
+            m.on('click', function() {
+                window.location.href = markerData.url;
+            });
+            m._index = index; // Assign an index to the marker
+
+            markers.push(m);
+            markerGroup.addLayer(m);
+        })();
+    {% endfor %}
 
     // Add marker group to the map
     markerGroup.addTo(mymap);
@@ -98,5 +102,31 @@ layout: default
     // Invalidate map size on window resize
     window.addEventListener('resize', function(){
         mymap.invalidateSize();
+    });
+
+    // Highlight marker on timeline hover and pan map to marker
+    document.querySelectorAll('.timeline-step').forEach(function(stepElement){
+        var index = stepElement.getAttribute('data-step-index');
+        var marker = markers[index];
+
+        stepElement.addEventListener('mouseover', function(){
+            marker.setZIndexOffset(1000); // Bring marker to front
+            // Add highlight class to marker icon
+            if (marker._icon) {
+                marker._icon.classList.add('highlight');
+            }
+            // Pan map to marker
+            mymap.panTo(marker.getLatLng(), { animate: true, duration: 0.5 });
+        });
+
+        stepElement.addEventListener('mouseout', function(){
+            marker.setZIndexOffset(0);
+            // Remove highlight class from marker icon
+            if (marker._icon) {
+                marker._icon.classList.remove('highlight');
+            }
+            // Optionally, you can pan back to original bounds or previous center
+            // mymap.fitBounds(markerGroup.getBounds());
+        });
     });
 </script>

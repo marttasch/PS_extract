@@ -227,6 +227,12 @@ iconify-icon {
     font-weight: bold;
     font-size: 14px;
     border: 2px solid #fff;
+    transition: all 0.3s ease;
+}
+
+.numbered-marker.highlight .marker-circle {
+    background-color: var(--accent-color);
+    transform: scale(1.2);
 }
 
 /* Additional Styles */
