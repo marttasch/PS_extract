@@ -172,4 +172,5 @@ countries_visited:
   USA: "\U0001F1FA\U0001F1F8"
 countrie_codes_visited:
 - US
+- DE
 ---

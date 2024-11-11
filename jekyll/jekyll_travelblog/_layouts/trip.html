@@ -3,15 +3,18 @@ layout: default
 ---
 
 <!-- Display Trip Info -->
-<h1>{{ page.title }}</h1>
-<p id="intro">{{ page.summary }}, {{ page.total_distance | round }} km, {{ page.total_entries }} steps</p>
+<div class="trip-info">
+    <h1>{{ page.title }}</h1>
+    <p>{{ page.summary }}, {{ page.total_distance | round }} km, {{ page.total_entries }} steps</p>
 
-<!-- Display country flags -->
-<div id="country-flags">
-    {% for code in page.countrie_codes_visited %}
-        <iconify-icon icon="flag:{{ code | downcase }}-4x3" width="1.2rem" height="1.2rem"></iconify-icon>
-    {% endfor %}
+    <!-- Display country flags -->
+    <div id="country-flags">
+        {% for code in page.countrie_codes_visited %}
+            <iconify-icon class="country-flag" icon="flag:{{ code | downcase }}-4x3" width="100%" height="100%"></iconify-icon>
+        {% endfor %}
+    </div>
 </div>
+
 
 <!-- Content Container -->
 <div class="content-container">
@@ -27,7 +30,7 @@ layout: default
                 <a href="{{ step.url }}" class="card" style="background-image: url('{{ step.photos[0] }}');">
                     <div class="card-content">
                         <h3>{{ step.title }}</h3>
-                        <iconify-icon icon="flag:{{ step.country_code | downcase }}-4x3" width="1.2rem" height="1.2rem"></iconify-icon> 
+                        <iconify-icon class="country-flag" icon="flag:{{ step.country_code | downcase }}-4x3" width="100%" height="100%"></iconify-icon> 
                         <small>{{ step.date | date: "%d.%m.%Y" }}</small>
                     </div>
                 </a>

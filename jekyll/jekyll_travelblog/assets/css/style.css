@@ -28,15 +28,10 @@ body {
     flex-direction: column;
 }
 
-#intro {
-    padding: 1em;
-    text-align: center;
-}
-
 h1 {
     font-size: 2.5em;
     font-weight: 300;
-    margin: 0.5em 0;
+    margin: 0.3em 0;
     text-align: center;
 }
 
@@ -68,8 +63,35 @@ a:hover {
 }
 
 iconify-icon {
-    width: 1em;
-    height: 1em;
+    width: 1.5em;
+    height: auto;
+    overflow: hidden;
+}
+
+/* Header */
+.trip-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1em;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+.trip-info h1 {
+    margin: 0;
+    font-weight: bold;
+}
+.trip-info p {
+    margin: 0;
+    padding: 0;
+    font-weight: 100;
+}
+#country-flags {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5em;
 }
 
 /* Content Container */
@@ -83,9 +105,11 @@ iconify-icon {
 .timeline {
     width: 25%;
     overflow-y: auto;
-    background-color: #e0e0e0; /* Improved background */
-    padding: 1em;
+    background-color: #e0e0e0;
+    padding: 0.5em;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+
 }
 
 #mapid {
@@ -95,7 +119,7 @@ iconify-icon {
 
 /* Timeline Steps */
 .timeline-step {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.5em;
 }
 
 .timeline-step .card {
@@ -145,6 +169,12 @@ iconify-icon {
     font-size: 0.9em;
 }
 
+.timeline-step .country-flag {
+    margin: 0 5px;
+    width: 1em;
+    border-radius: 18%;
+}
+
 /* Media Queries */
 @media (max-width: 767px) {
     .content-container {
@@ -179,14 +209,10 @@ iconify-icon {
 }
 
 /* Country flags styling */
-#country-flags {
-    margin: 20px 0;
-    text-align: center;
-}
-
 .country-flag {
-    font-size: 2em;
-    margin: 0 5px;
+    margin: 0 2px;
+    width: 1.8em;
+    border-radius: 18%;
 }
 
 /* Map marker styles */
