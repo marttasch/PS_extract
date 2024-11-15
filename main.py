@@ -15,8 +15,8 @@ from src.email_utils import email_steps, send_trip_email
 # Global parameters
 extract_dir = "Extracts"
 data_dir = "data"
-trip_file = os.path.join(data_dir, 'trip.json')
-map_file = os.path.join(data_dir, 'locations.json')
+trip_filename = 'trip.json'
+map_filename = 'locations.json'
 
 # Set all specific run modes of the script to False; will be modified through command-line arguments
 mail = False
@@ -38,11 +38,14 @@ Options:
     -e, --email address@domain.com Send emails containing descriptions, images, and videos to the given address
     -i, --interactive              Display an analysis and interactively ask what to do for each step
     -x, --exclude                  Exclude the first and last steps from generated maps
+    
+    -f, --folder                   Specify the folder containing the data files (default: 'data')
     -h, --help                     Display this help message
 """)
 
 def main():
     global mail, local, jekyll, interactive, verbose, exclude, dest_email
+    global data_dir, trip_dir, trip_filename, map_filename
 
     # Analyze command-line arguments
     args = sys.argv[1:]
@@ -74,6 +77,15 @@ def main():
         elif arg in ('-x', '--exclude'):
             exclude = True
             print("Exclude option activated.")
+        elif arg in ('-f', '--folder'):
+            i += 1
+            if i < len(args):
+                data_dir = args[i]
+                print(f"Data folder set to '{data_dir}'.")
+            else:
+                print("Error: Missing data folder.")
+                print_instructions()
+                return
         elif arg in ('-h', '--help'):
             print_instructions()
             return
@@ -91,6 +103,7 @@ def main():
         return
 
     # Load trip data
+    trip_file = os.path.join(data_dir, trip_filename)
     if not os.path.exists(trip_file):
         print(f"Error: Trip file '{trip_file}' not found.")
         print_instructions()
@@ -100,6 +113,7 @@ def main():
         trip_data = json.load(f)
 
     # Load location data
+    map_file = os.path.join(data_dir, map_filename)
     loc_data = None
     if os.path.exists(map_file):
         with open(map_file, 'r', encoding='utf-8') as f:

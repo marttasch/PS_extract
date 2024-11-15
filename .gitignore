@@ -5,3 +5,8 @@ src/pycache/
 __pycache__/
 __pycache__/*/
 PS_extract.code-workspace
+
+data/
+Extracts/
+
+jekyll/jekyll_travelblog/_trips/vm-sudostasien/
