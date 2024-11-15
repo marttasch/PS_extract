@@ -26,20 +26,44 @@ layout: default
         {% assign steps = site.trips | where_exp: "item", "item.dir == trip_dir and item.name != 'index.md'" | sort: "date" %}
         {% for step in steps %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
-                <a href="{{ step.url }}" class="card" style="background-image: url('{{ step.photos[0] }}');">
+                <div class="card">
+                    <!-- Photo gallery carousel -->
+                    <section class="splide splide-{{ forloop.index0 }}" aria-label="Splide Basic HTML Example">
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                {% for photo in step.photos %}
+                                    <li class="splide__slide">
+                                        <img src="{{ photo }}" alt="{{ step.title }}" >
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </section>
+                    <!-- Card content -->
                     <div class="card-content">
                         <h3>{{ step.title }}</h3>
-                        <iconify-icon class="country-flag" icon="flag:{{ step.country_code | downcase }}-4x3" width="100%" height="100%"></iconify-icon> 
-                        <small>{{ step.date | date: "%d.%m.%Y" }}</small>
+                        <div class="card-header">
+                            <iconify-icon class="country-flag" icon="flag:{{ step.country_code | downcase }}-4x3"></iconify-icon> 
+                            <iconify-icon class="weather-icon" icon="meteocons:{{ step.weather}}-fill" width="100%" height="100%"></iconify-icon>
+                            <small>{{ step.date | date: "%d.%m.%Y" }}</small>
+                        </div>
+                        <!-- Text preview with expandable content -->
+                        <div class="card-text">
+                            <div class="preview">
+                                {{ step.description | strip_html | truncatewords: 50 }}
+                            </div>
+                            <div class="full-text" style="display: none;">
+                                {{ step.description }}
+                            </div>
+                            <button class="expand-button">Mehr anzeigen</button>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
         {% endfor %}
     </div>
 </div>
 
-<!-- Include Iconify for flag icons (if not already included) -->
-<script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
 
 <script>
     // Initialize the map
@@ -129,4 +153,69 @@ layout: default
             // mymap.fitBounds(markerGroup.getBounds());
         });
     });
+
+     // Expand/collapse functionality
+     document.querySelectorAll('.expand-button').forEach(function(button){
+        button.addEventListener('click', function(){
+            var cardText = this.parentElement;
+            var fullText = cardText.querySelector('.full-text');
+            var preview = cardText.querySelector('.preview');
+            if (fullText.style.display === 'none' || fullText.style.display === '') {
+                fullText.style.display = 'block';
+                preview.style.display = 'none';
+                this.textContent = 'Weniger anzeigen';
+            } else {
+                fullText.style.display = 'none';
+                preview.style.display = 'block';
+                this.textContent = 'Mehr anzeigen';
+            }
+        });
+    });
+
+    // Carousel functionality
+    document.querySelectorAll('.carousel').forEach(function(carousel){
+        var items = carousel.querySelectorAll('.carousel-item');
+        var currentIndex = 0;
+        var prevButton = carousel.querySelector('.prev-btn');
+        var nextButton = carousel.querySelector('.next-btn');
+
+        function showItem(index) {
+            items.forEach(function(item, i){
+                item.classList.remove('active');
+                if (i === index) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        prevButton.addEventListener('click', function(){
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 1;
+            showItem(currentIndex);
+        });
+
+        nextButton.addEventListener('click', function(){
+            currentIndex = (currentIndex < items.length - 1) ? currentIndex + 1 : 0;
+            showItem(currentIndex);
+        });
+    });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var splideElements = document.querySelectorAll('.splide');
+
+    splideElements.forEach(function (element) {
+        var splide = new Splide(element, {
+            type     : 'slide',  
+            perPage  : 3,
+            perMove  : 1,
+            gap      : '0.5em',
+            height   : '10rem',
+            focus    : 'center',
+            autoWidth: true,
+        });
+
+        splide.mount();
+    });
+});
 </script>

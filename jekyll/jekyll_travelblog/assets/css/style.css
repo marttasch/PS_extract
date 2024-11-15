@@ -1,6 +1,6 @@
 /* Global styles and variables */
 :root {
-    --background-color: #f0f2f5;
+    --background-color: #e3e4e6;
     --text-color: #333;
     --primary-color: #4a90e2;
     --secondary-color: #50e3c2;
@@ -42,14 +42,14 @@ h2 {
 }
 
 h3 {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin: 0.5em 0;
-    color: #fff;
+    color: var(--text-color);
 }
 
 small {
-    font-size: 0.8em;
-    color: #fff;
+    font-size: 0.9em;
+    color: var(--text-color);
 }
 
 a {
@@ -103,116 +103,145 @@ iconify-icon {
 }
 
 .timeline {
-    width: 25%;
+    width: 50vw; /* Timeline now takes up 50% of the screen width */
     overflow-y: auto;
     background-color: #e0e0e0;
-    padding: 0.5em;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-
+    padding: 1em;
+    position: relative;
 }
 
 #mapid {
-    width: 75%;
+    width: 50%; /* Map now takes up 50% of the screen width */
     height: 100%;
+}
+
+/* Timeline Line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25px;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
 }
 
 /* Timeline Steps */
 .timeline-step {
-    margin-bottom: 0.5em;
+    position: relative;
+    margin-bottom: 2em;
+}
+
+.timeline-step::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    top: 0.5em;
 }
 
 .timeline-step .card {
-    display: block;
+    margin-left: 50px;
     position: relative;
-    background-size: cover;
-    background-position: center;
-    height: 200px;
-    border-radius: 8px;
+    background: #fff;
+    border-radius: 1em;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 60px); /* Adjust card width to fit the timeline */
 }
 
-.timeline-step .card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Increase the card size for better fit */
+.timeline-step .card .carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 300px; /* Increased height for larger images */
+}
+
+.timeline-step .card .carousel img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.carousel-inner {
+    position: relative;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4); /* Overlay effect */
 }
 
-.timeline-step .card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
-
-.timeline-step .card-content {
+.carousel-item {
+    display: none;
     position: absolute;
-    bottom: 0;
-    padding: 1em;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-item.active {
+    display: block;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.carousel-controls button {
+    background: rgba(0,0,0,0.5);
     color: #fff;
-    z-index: 1;
+    border: none;
+    font-size: 1.5em;
+    padding: 0.5em;
+    cursor: pointer;
 }
 
-.timeline-step h3, .timeline-step small {
-    margin: 0;
+/* Card Content */
+.card-content {
+    padding: 1em;
 }
 
-.timeline-step h3 {
-    font-size: 1.2em;
-    margin-bottom: 0.3em;
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+    background: darken(var(--background-color), 60%);
 }
 
-.timeline-step small {
-    font-size: 0.9em;
+.card-header .country-flag {
+    margin-right: 0.5em;
+    width: 2em;
+    height: auto;
+}
+.card-header .weather-icon {
+    margin-right: 0.5em;
+    width: 2em;
+    height: 2em;
 }
 
-.timeline-step .country-flag {
-    margin: 0 5px;
-    width: 1em;
-    border-radius: 18%;
+.card-text {
+    position: relative;
 }
 
-/* Media Queries */
-@media (max-width: 767px) {
-    .content-container {
-        flex-direction: column;
-    }
-    #mapid {
-        width: 100%;
-        height: calc(100vh - 160px); /* Adjust based on the height of the timeline */
-    }
-    .timeline {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 160px; /* Adjust as necessary */
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap;
-        padding: 0.5em;
-        background-color: #e0e0e0;
-        z-index: 1000;
-    }
-    .timeline-step {
-        display: inline-block;
-        vertical-align: top;
-        width: 200px; /* Adjust as necessary */
-        margin-right: 1em;
-    }
-    .timeline-step .card {
-        height: 130px;
-    }
+.card-text .preview,
+.card-text .full-text {
+    margin-bottom: 1em;
 }
 
-/* Country flags styling */
-.country-flag {
-    margin: 0 2px;
-    width: 1.8em;
-    border-radius: 18%;
+.card-text .expand-button {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 /* Map marker styles */
@@ -235,10 +264,32 @@ iconify-icon {
     transform: scale(1.2);
 }
 
-/* Additional Styles */
-.footer {
-    font-style: italic;
-    margin-top: 45px;
-    color: var(--text-color);
-    text-align: center;
+/* Media Queries */
+@media (max-width: 767px) {
+    .content-container {
+        flex-direction: column;
+    }
+    #mapid {
+        width: 100%;
+        height: calc(100vh - 160px); /* Adjust based on the height of the timeline */
+    }
+    .timeline {
+        width: 100%;
+        height: auto;
+    }
+}
+
+
+/*  Splide photo carousel styles */
+.splide__slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1em;
+}
+
+
+.splide__list :last-child {
+    /* Your styles for the last child of .splide__list */
+    margin: 0 !important;
 }

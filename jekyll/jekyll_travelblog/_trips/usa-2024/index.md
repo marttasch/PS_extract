@@ -6,41 +6,6 @@ total_distance: 560.099911070762
 total_entries: 3
 date: '2024-04-09'
 permalink: /trips/usa-2024/
-steps:
-- title: Total eclipse
-  url: /trips/usa-2024/llano_98177523.html
-  date: '2024-04-09'
-  slug: llano
-  id: 98177523
-- title: Houston
-  url: /trips/usa-2024/houston_98394489.html
-  date: '2024-04-10'
-  slug: houston
-  id: 98394489
-- title: Houston Space Center and Galveston
-  url: /trips/usa-2024/webster_98534920.html
-  date: '2024-04-11'
-  slug: webster
-  id: 98534920
-step_coords:
-- lat: 30.60385422230917
-  lon: -98.70438914623729
-  name: Total eclipse
-  date: '2024-04-09'
-  id: 98177523
-  slug: llano
-- lat: 29.7589382
-  lon: -95.3676974
-  name: Houston
-  date: '2024-04-10'
-  id: 98394489
-  slug: houston
-- lat: 29.5468712
-  lon: -95.1361146
-  name: Houston Space Center and Galveston
-  date: '2024-04-11'
-  id: 98534920
-  slug: webster
 route_coords:
 - - 30.4865192
   - -98.7039201
