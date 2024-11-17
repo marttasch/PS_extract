@@ -12,7 +12,7 @@ from collections import OrderedDict  # Import OrderedDict to maintain order
 # ##############################################################################
 # ############################### HTML GENERATION ##############################
 # ##############################################################################
-def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
+def generate_html(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose=False):
     """
     Generates HTML files for the trip and steps.
     """
@@ -41,7 +41,7 @@ def generate_html(trip_data, steps_info, loc_data, extract_dir, verbose=False):
     copy_static_assets(static_src_dir, extract_dir)
 
     # Process media files for steps
-    process_media_files(steps_info, extract_dir)
+    process_media_files(steps_info, data_dir, extract_dir)
 
     # Prepare step coordinates and route data for maps
     step_coords = prepare_step_coords(steps_info)
@@ -68,13 +68,13 @@ def copy_static_assets(static_src_dir, extract_dir):
         shutil.rmtree(static_extract_dir)
         shutil.copytree(static_src_dir, static_extract_dir)
 
-def process_media_files(steps_info, extract_dir):
+def process_media_files(steps_info, data_dir, extract_dir):
     """
     Copies media files (photos and videos) for each step and updates their paths.
     """
     for step in steps_info:
         # Define source and destination directories for photos
-        photos_src_dir = os.path.join('data', f"{step['slug']}_{step['id']}", "photos")
+        photos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "photos")
         photos_dest_dir = os.path.join(extract_dir, f"{step['slug']}_{step['id']}", "photos")
 
         # Copy photos if available and update paths
@@ -88,7 +88,7 @@ def process_media_files(steps_info, extract_dir):
             step['photos'] = []
 
         # Define source and destination directories for videos
-        videos_src_dir = os.path.join('data', f"{step['slug']}_{step['id']}", "videos")
+        videos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "videos")
         videos_dest_dir = os.path.join(extract_dir, f"{step['slug']}_{step['id']}", "videos")
 
         # Copy videos if available and update paths
@@ -198,7 +198,7 @@ def generate_step_pages(step_template, steps_info, step_coords, route_coords, ex
 # ##############################################################################
 # ############################### JEKYLL GENERATION #############################
 # ##############################################################################
-def generate_jekyll(trip_data, steps_info, loc_data, extract_dir, verbose=False):
+def generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose=False):
     """
     Generates Markdown files with front matter for Jekyll.
     """
@@ -214,7 +214,7 @@ def generate_jekyll(trip_data, steps_info, loc_data, extract_dir, verbose=False)
     
     # Generate individual step pages
     for step in steps_info:
-        generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir)
+        generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, extract_dir, trips_dir)
 
 def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
     """
@@ -252,7 +252,8 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
         'step_coords': prepare_step_coords(steps_info),
         'route_coords': prepare_route_coords(loc_data),
         'countries_visited': dict(visited_countries),
-        'countrie_codes_visited': visited_countrieCodes
+        'countrie_codes_visited': visited_countrieCodes,
+        'trip_slug': trip_slug
     }
 
     content = '---\n' + yaml.dump(front_matter, sort_keys=False) + '---\n'
@@ -260,10 +261,11 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
     with open(os.path.join(trip_dir, 'index.md'), 'w', encoding='utf-8') as f:
         f.write(content)
 
-def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
+def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, extract_dir, trips_dir):
     """
     Generates individual step pages for Jekyll.
     """
+    print("gen jekyll step")
     trip_slug = trip_data['slug']
     step_filename = f"{step['slug']}_{step['id']}.md"
     step_dir = os.path.join(trips_dir, trip_slug)
@@ -274,9 +276,10 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
     os.makedirs(media_dest_dir, exist_ok=True)
 
     # Copy photos and update paths
-    photos_src_dir = os.path.join('data', f"{step['slug']}_{step['id']}", "photos")
+    photos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "photos")
     step_photos = []
     if os.path.exists(photos_src_dir):
+        print("copying from: ", photos_src_dir)
         for photo in step['photos']:
             src_photo_path = os.path.join(photos_src_dir, photo)
             dest_photo_path = os.path.join(media_dest_dir, photo)
@@ -288,7 +291,7 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
         step_photos = []
 
     # Copy videos and update paths
-    videos_src_dir = os.path.join('data', f"{step['slug']}_{step['id']}", "videos")
+    videos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "videos")
     step_videos = []
     if os.path.exists(videos_src_dir):
         for video in step['videos']:
@@ -308,6 +311,7 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
         'date': step['date'],
         'permalink': f"/trips/{trip_slug}/{step['slug']}_{step['id']}.html",
         'location_name': step['location_name'],
+        'trip_slug': trip_slug,
         'lat': step['lat'],
         'lon': step['lon'],
         'country': step['country'],
@@ -318,7 +322,7 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, trips_dir):
         'description': step['description'],
         'photos': step_photos,
         'videos': step_videos,
-        'current_step_id': step['id']
+        'current_step_id': step['id'],
     }
 
     content = '---\n' + yaml.dump(front_matter, sort_keys=False) + '---\n'

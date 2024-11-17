@@ -122,14 +122,14 @@ def main():
     else:
         print(f"Warning: Locations file '{map_file}' not found. Route mapping will be unavailable.")
 
-    # Parse data
+    # ###### Parse data ######
     steps_info = parse_data(trip_data, data_dir, extract_dir, verbose)
 
-    # Generate outputs
+    # ###### Generate outputs ######
     if local:
-        generate_html(trip_data, steps_info, loc_data, extract_dir, verbose)
+        generate_html(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose)
     if jekyll:
-        generate_jekyll(trip_data, steps_info, loc_data, extract_dir, verbose)
+        generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose)
     if mail or interactive:
         email_steps(trip_data, steps_info, dest_email, interactive)
 
