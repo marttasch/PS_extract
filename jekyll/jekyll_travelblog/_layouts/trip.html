@@ -33,7 +33,9 @@ layout: default
                             <ul class="splide__list">
                                 {% for photo in step.photos %}
                                     <li class="splide__slide">
-                                        <img src="{{ photo }}" alt="{{ step.title }}" >
+                                        <a href="{{ photo }}" class="glightbox glightbox-{{ forloop.index0 }}">
+                                            <img src="{{ photo }}" alt="{{ step.title }}" >
+                                        </a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -66,6 +68,7 @@ layout: default
 
 
 <script>
+    // ##### Leaflet Map #####
     // Initialize the map
     var mymap = L.map('mapid').setView([0, 0], 2);
 
@@ -171,36 +174,11 @@ layout: default
             }
         });
     });
-
-    // Carousel functionality
-    document.querySelectorAll('.carousel').forEach(function(carousel){
-        var items = carousel.querySelectorAll('.carousel-item');
-        var currentIndex = 0;
-        var prevButton = carousel.querySelector('.prev-btn');
-        var nextButton = carousel.querySelector('.next-btn');
-
-        function showItem(index) {
-            items.forEach(function(item, i){
-                item.classList.remove('active');
-                if (i === index) {
-                    item.classList.add('active');
-                }
-            });
-        }
-
-        prevButton.addEventListener('click', function(){
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : items.length - 1;
-            showItem(currentIndex);
-        });
-
-        nextButton.addEventListener('click', function(){
-            currentIndex = (currentIndex < items.length - 1) ? currentIndex + 1 : 0;
-            showItem(currentIndex);
-        });
-    });
 </script>
 
 <script>
+// ##### Carousel #####
+// Initialize Splide Carosel
 document.addEventListener('DOMContentLoaded', function () {
     var splideElements = document.querySelectorAll('.splide');
 
@@ -216,6 +194,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         splide.mount();
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var glightboxElements = document.querySelectorAll('.glightbox');
+
+    glightboxElements.forEach(function (element) {
+        var lightbox = new Lightbox(element, {
+            selector: '.glightbox',
+            keyboardNavigation: true,
+            touchNavigation: true,
+            loop: true,
+            slideEffect: 'slide',
+            CloseOnOutsideClick: true,
+            draggable: true,
+            zoomable: false,
+            height: '8%',
+            width: '8%',
+        });
+
+        lightbox.mount();
     });
 });
 </script>
