@@ -139,9 +139,9 @@ layout: default
             if (marker._icon) {
                 marker._icon.classList.add('highlight');
             }
-            // Pan map to marker
-            mymap.panTo(marker.getLatLng(), { animate: true, duration: 0.5 });
-        });
+        // Pan map to marker and set zoom level
+        mymap.setView(marker.getLatLng(), 8, { animate: true, duration: 0.5 });
+   });
 
         stepElement.addEventListener('mouseout', function(){
             marker.setZIndexOffset(0);
