@@ -22,8 +22,8 @@ layout: default
 
     <!-- Timeline -->
     <div class="timeline">
-        {% assign trip_dir = page.dir %}
-        {% assign steps = site.trips | where_exp: "item", "item.dir == trip_dir and item.name != 'index.md'" | sort: "date" %}
+        {% assign trip_slug = page.trip_slug %}
+        {% assign steps = site.trips | where_exp: "item", "item.trip_slug == trip_slug" | sort: "date" %}
         {% for step in steps %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <div class="card">
