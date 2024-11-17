@@ -25,15 +25,16 @@ layout: default
         {% assign trip_slug = page.trip_slug %}
         {% assign steps = site.trips | where_exp: "item", "item.trip_slug == trip_slug and item.layout == 'step'" | sort: "date" %}
             {% for step in steps %}
+            {% assign index = forloop.index0 %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <div class="card">
                     <!-- Photo gallery carousel -->
-                    <section class="splide splide-{{ forloop.index0 }}" aria-label="Splide Basic HTML Example">
+                    <section class="splide splide-{{ index }}" aria-label="Splide Basic HTML Example">
                         <div class="splide__track">
                             <ul class="splide__list">
                                 {% for photo in step.photos %}
                                     <li class="splide__slide">
-                                        <a href="{{ photo }}" class="glightbox glightbox-{{ forloop.index0 }}">
+                                        <a href="{{ photo }}" class="glightbox glightbox-{{ index }}" data-glightbox="title: <b>{{ step.title }}</b>">
                                             <img src="{{ photo }}" alt="{{ step.title }}" >
                                         </a>
                                     </li>
@@ -199,24 +200,20 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var glightboxElements = document.querySelectorAll('.glightbox');
+// ##### Lightbox #####
+const lightbox = GLightbox({ 
+    selector: '.glightbox',
+    keyboardNavigation: true,
+    touchNavigation: true,
+    loop: true,
+    slideEffect: 'slide',
+    CloseOnOutsideClick: true,
+    draggable: true,
+    zoomable: false,
 
-    glightboxElements.forEach(function (element) {
-        var lightbox = new Lightbox(element, {
-            selector: '.glightbox',
-            keyboardNavigation: true,
-            touchNavigation: true,
-            loop: true,
-            slideEffect: 'slide',
-            CloseOnOutsideClick: true,
-            draggable: true,
-            zoomable: false,
-            height: '8%',
-            width: '8%',
-        });
+    height: '8%',
+    width: '8%',
 
-        lightbox.mount();
-    });
+
 });
 </script>
