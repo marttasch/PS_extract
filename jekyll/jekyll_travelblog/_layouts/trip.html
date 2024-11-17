@@ -23,8 +23,8 @@ layout: default
     <!-- Timeline -->
     <div class="timeline">
         {% assign trip_slug = page.trip_slug %}
-        {% assign steps = site.trips | where_exp: "item", "item.trip_slug == trip_slug" | sort: "date" %}
-        {% for step in steps %}
+        {% assign steps = site.trips | where_exp: "item", "item.trip_slug == trip_slug and item.layout == 'step'" | sort: "date" %}
+            {% for step in steps %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <div class="card">
                     <!-- Photo gallery carousel -->
