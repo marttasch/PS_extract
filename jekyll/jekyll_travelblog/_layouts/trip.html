@@ -34,7 +34,11 @@ layout: default
                             <ul class="splide__list">
                                 {% for photo in step.photos %}
                                     <li class="splide__slide">
-                                        <a href="{{ photo }}" class="glightbox glightbox-{{ index }}" data-glightbox="title: <b>{{ step.title }}</b>; gallery: step-{{ index }}">
+                                        <a  href="{{ photo }}" 
+                                            class="glightbox glightbox-{{ index }}"
+                                            data-glightbox="title: <b>{{ step.title }}</b>" 
+                                            data-gallery="gallery-{{ index }}"
+                                            >
                                             <img src="{{ photo }}" alt="{{ step.title }}" >
                                         </a>
                                     </li>
