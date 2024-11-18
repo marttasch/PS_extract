@@ -4,20 +4,16 @@
   <meta charset="UTF-8">
   <title>{{ page.title }} - {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> -->
   <link rel="stylesheet" href="{{ '/assets/css/leaflet.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/glightbox.min.css' | relative_url }}">
-
-
-  <link href=" https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css " rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/css/splide.min.css' | relative_url }}">
 </head>
 <body>
-    <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
     <script src="{{ '/assets/js/leaflet.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/glightbox.min.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/iconify-icon.min.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/splide.min.js' | relative_url }}"></script>
 
-      <script src=" https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js "></script>
 
   {{ content }}
 </body>
