@@ -1,4 +1,4 @@
----
+<link rel="stylesheet" href="/assets/css/lightbox-thumbnails.css">
 layout: default
 ---
 
@@ -233,7 +233,23 @@ let customSlideHTML = `<div class="gslide">
 </div>`;
 
 
-const lightbox = GLightbox({ 
+const lightbox = GLightbox({
+    onOpen: (instance) => {
+        const slides = instance.elements;
+        const thumbnailsContainer = document.querySelector('.gthumbnails');
+        thumbnailsContainer.innerHTML = ''; // Clear existing thumbnails
+
+        slides.forEach((slide, index) => {
+            const imgSrc = slide.querySelector('img').src;
+            const thumbnail = document.createElement('img');
+            thumbnail.src = imgSrc;
+            thumbnail.dataset.index = index;
+            thumbnail.addEventListener('click', () => {
+                instance.goToSlide(index);
+            });
+            thumbnailsContainer.appendChild(thumbnail);
+        });
+    },
     selector: '.glightbox',
     lightboxHTML: customLightboxHTML,
     slideHTML: customSlideHTML,
