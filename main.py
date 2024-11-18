@@ -8,6 +8,8 @@ import sys
 import os
 from pathlib import Path
 import json
+import gpxpy
+import geojson
 from src.data_parser import parse_data
 from src.output_generator import generate_html, generate_jekyll
 from src.email_utils import email_steps, send_trip_email
@@ -22,6 +24,8 @@ map_filename = 'locations.json'
 mail = False
 local = False
 jekyll = False
+convert_gpx = False
+merge_geojson = False
 interactive = False
 verbose = False
 exclude = False
@@ -40,11 +44,13 @@ Options:
     -x, --exclude                  Exclude the first and last steps from generated maps
     
     -f, --folder                   Specify the folder containing the data files (default: 'data')
+    -g, --geojson                  Merge all GeoJSON (Folder 'geojson') files into a single file for the webpage
+    -c, --convert-gpx              Convert GPX files in the 'gpx' folder to GeoJSON format
     -h, --help                     Display this help message
 """)
 
 def main():
-    global mail, local, jekyll, interactive, verbose, exclude, dest_email
+    global mail, local, jekyll, interactive, verbose, exclude, dest_email, merge_geojson, convert_gpx
     global data_dir, trip_dir, trip_filename, map_filename
 
     # Analyze command-line arguments
@@ -86,9 +92,12 @@ def main():
                 print("Error: Missing data folder.")
                 print_instructions()
                 return
-        elif arg in ('-h', '--help'):
-            print_instructions()
-            return
+        elif arg in ('-c', '--convert-gpx'):
+            convert_gpx = True
+            print("GPX to GeoJSON conversion option activated.")
+        elif arg in ('-g', '--geojson'):
+            merge_geojson = True
+            print("GeoJSON merge option activated.")
         else:
             print(f"Unknown option: {arg}")
             print_instructions()
@@ -96,10 +105,14 @@ def main():
         i += 1
 
     # Create extraction directory
+    extract_dir_jekyll = os.path.join(extract_dir, 'jekyll')
+    extract_dir_html = os.path.join(extract_dir, 'html')
     try:
         Path(extract_dir).mkdir(parents=True, exist_ok=True)
+        Path(extract_dir_jekyll).mkdir(parents=True, exist_ok=True)
+        Path(extract_dir_html).mkdir(parents=True, exist_ok=True)
     except Exception as e:
-        print(f"Error: Could not create directory '{extract_dir}'. {e}")
+        print(f"Error: Could not create directory. {e}")
         return
 
     # Load trip data
@@ -111,6 +124,19 @@ def main():
 
     with open(trip_file, 'r', encoding='utf-8') as f:
         trip_data = json.load(f)
+
+    # Convert GPX to GeoJSON if the option is activated
+    if convert_gpx:
+        gpx_dir = os.path.join(data_dir, 'gpx')
+        geojson_dir = os.path.join(data_dir, 'geojson')
+        convert_gpx_to_geojson(gpx_dir, geojson_dir)
+        print(f"Converted GPX files in '{gpx_dir}' to GeoJSON format in '{geojson_dir}'.")
+    if merge_geojson:
+        geojson_dir = os.path.join(data_dir, 'geojson')
+        merged_geojson_file = os.path.join(extract_dir_jekyll, trip_data['slug'], 'route.geojson')
+        merge_geojson_files(geojson_dir, merged_geojson_file)
+        print(f"Merged GeoJSON files into '{merged_geojson_file}'.")
+
 
     # Load location data
     map_file = os.path.join(data_dir, map_filename)
@@ -127,11 +153,56 @@ def main():
 
     # ###### Generate outputs ######
     if local:
-        generate_html(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose)
+        generate_html(trip_data, steps_info, loc_data, data_dir, extract_dir_html, verbose)
     if jekyll:
-        generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose)
+        generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir_jekyll, verbose)
     if mail or interactive:
         email_steps(trip_data, steps_info, dest_email, interactive)
 
+def merge_geojson_files(geojson_dir, output_file):
+    """Merge all GeoJSON files in a directory into a single GeoJSON file."""
+    features = []
+    for filename in os.listdir(geojson_dir):
+        if filename.endswith('.geojson'):
+            filepath = os.path.join(geojson_dir, filename)
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                features.extend(data.get('features', []))
+
+    # Sort features by time
+    features.sort(key=lambda feature: feature['properties']['time'])
+
+    merged_geojson = {
+        "type": "FeatureCollection",
+        "features": features
+    }
+
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(merged_geojson, f, ensure_ascii=False, indent=4)
+
+def convert_gpx_to_geojson(gpx_dir, geojson_dir):
+    """Convert all GPX files in a directory to GeoJSON format."""
+    for filename in os.listdir(gpx_dir):
+        if filename.endswith('.gpx'):
+            filepath = os.path.join(gpx_dir, filename)
+            with open(filepath, 'r', encoding='utf-8') as f:
+                gpx = gpxpy.parse(f)
+                features = []
+                for track in gpx.tracks:
+                    for segment in track.segments:
+                        for point in segment.points:
+                            feature = geojson.Feature(
+                                geometry=geojson.Point((point.longitude, point.latitude)),
+                                properties={
+                                    "time": point.time.isoformat() if point.time else None,
+                                    "elevation": point.elevation
+                                }
+                            )
+                            features.append(feature)
+                geojson_data = geojson.FeatureCollection(features)
+                output_filename = os.path.splitext(filename)[0] + '.geojson'
+                output_filepath = os.path.join(geojson_dir, output_filename)
+                with open(output_filepath, 'w', encoding='utf-8') as out_f:
+                    geojson.dump(geojson_data, out_f, ensure_ascii=False, indent=4)
 if __name__ == "__main__":
     main()

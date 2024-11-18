@@ -136,12 +136,19 @@ layout: default
         mymap.fitBounds(markerGroup.getBounds());
     }
 
-    // Add route
-    var route = {{ page.route_coords | jsonify }};
-    if (route.length > 0) {
-        var polyline = L.polyline(route, {color: 'blue'}).addTo(mymap);
-        mymap.fitBounds(polyline.getBounds());
-    }
+    // Load GeoJSON route
+    fetch('/assets/geojson/route.geojson')
+        .then(response => response.json())
+        .then(data => {
+            var coordinates = data.features.map(function(feature) {
+                return [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]; // Leaflet uses [lat, lng] format
+            });
+
+            var polyline = L.polyline(coordinates, {color: 'blue'}).addTo(mymap);
+            mymap.fitBounds(polyline.getBounds());
+        })
+        .catch(error => console.error('Error loading GeoJSON:', error));
+    
 
     // Invalidate map size on window resize
     window.addEventListener('resize', function(){

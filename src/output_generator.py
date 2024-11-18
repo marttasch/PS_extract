@@ -198,13 +198,10 @@ def generate_step_pages(step_template, steps_info, step_coords, route_coords, ex
 # ##############################################################################
 # ############################### JEKYLL GENERATION #############################
 # ##############################################################################
-def generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir, verbose=False):
+def generate_jekyll(trip_data, steps_info, loc_data, data_dir, trips_dir, verbose=False):
     """
     Generates Markdown files with front matter for Jekyll.
     """
-    # Set up paths
-    trips_dir = os.path.join(extract_dir, 'jekyll', '_trips')
-    os.makedirs(trips_dir, exist_ok=True)
     
     # Copy static assets (if needed)
     # You can copy any static assets required for your Jekyll site here
@@ -214,7 +211,7 @@ def generate_jekyll(trip_data, steps_info, loc_data, data_dir, extract_dir, verb
     
     # Generate individual step pages
     for step in steps_info:
-        generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, extract_dir, trips_dir)
+        generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, trips_dir)
 
 def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
     """
@@ -261,7 +258,7 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
     with open(os.path.join(trip_dir, 'index.md'), 'w', encoding='utf-8') as f:
         f.write(content)
 
-def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, extract_dir, trips_dir):
+def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, trips_dir):
     """
     Generates individual step pages for Jekyll.
     """
