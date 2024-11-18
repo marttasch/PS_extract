@@ -246,8 +246,8 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
         'date': start_date,
         'permalink': f'/trips/{trip_slug}/',
         'steps': steps_list,
-        'step_coords': prepare_step_coords(steps_info),
-        'route_coords': prepare_route_coords(loc_data),
+        #'step_coords': prepare_step_coords(steps_info),
+        #'route_coords': prepare_route_coords(loc_data),
         'countries_visited': dict(visited_countries),
         'countrie_codes_visited': visited_countrieCodes,
         'trip_slug': trip_slug
@@ -262,7 +262,6 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
     """
     Generates individual step pages for Jekyll.
     """
-    print("gen jekyll step")
     trip_slug = trip_data['slug']
     step_filename = f"{step['slug']}_{step['id']}.md"
     step_dir = os.path.join(trips_dir, trip_slug)
@@ -276,7 +275,6 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
     photos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "photos")
     step_photos = []
     if os.path.exists(photos_src_dir):
-        print("copying from: ", photos_src_dir)
         for photo in step['photos']:
             src_photo_path = os.path.join(photos_src_dir, photo)
             dest_photo_path = os.path.join(media_dest_dir, photo)
