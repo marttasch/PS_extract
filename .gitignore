@@ -1,6 +1,7 @@
 # python
 *.pyc pycache/ venv/ *.egg-info/ dist/ build/ .idea/ .vscode/ *.pyo *.pyd *.pyw *.pyz *.pyzw *.ipynb_checkpoints/
 src/pycache/
+aider-env/
 
 __pycache__/
 __pycache__/*/
@@ -10,3 +11,5 @@ data/
 Extracts/
 
 jekyll/jekyll_travelblog/_trips/vm-sudostasien/
+.aider*
+.env

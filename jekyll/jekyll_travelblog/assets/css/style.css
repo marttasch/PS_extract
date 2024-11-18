@@ -82,16 +82,34 @@ iconify-icon {
     margin: 0;
     font-weight: bold;
 }
-.trip-info p {
-    margin: 0;
-    padding: 0;
-    font-weight: 100;
+.trip-summary {
+    text-align: center;
+    margin: 0 0 1em 0;
 }
-#country-flags {
+
+.summary-text {
+    font-size: 1.2em;
+    margin: 0 0 0.5em 0;
+    font-style: italic;
+}
+
+.trip-details {
     display: flex;
     justify-content: center;
-    align-items: center;
+    gap: 10px;
+}
+
+.total-distance, .total-entries {
+    font-size: 1em;
+    margin: 0;
+}
+
+#country-flags .country-flag {
     margin-top: 0.5em;
+    margin-right: 0.5em;
+    width: 2em;
+    height: auto;
+    border-radius: 5px;
 }
 
 /* Content Container */
@@ -118,9 +136,9 @@ iconify-icon {
 /* Timeline Line */
 .timeline::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
-    left: 10px;
+    left: 20px;
     width: 4px;
     height: 100%;
     background: var(--primary-color);
@@ -135,22 +153,22 @@ iconify-icon {
 .timeline-step::before {
     content: '';
     position: absolute;
-    left: 10px;
+    top: 12.2em;
+    left: -6.5px;
     width: 20px;
     height: 20px;
-    background: var(--primary-color);
+    background: var(--secondary-color);
     border-radius: 50%;
-    top: 0.5em;
 }
 
 .timeline-step .card {
-    margin-left: 50px;
+    margin-left: 25px;
     position: relative;
     background: #fff;
     border-radius: 1em;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: calc(100% - 60px); /* Adjust card width to fit the timeline */
+    width: calc(100% - 30px); /* Adjust card width to fit the timeline */
 }
 
 /* Increase the card size for better fit */
@@ -205,8 +223,12 @@ iconify-icon {
 
 /* Card Content */
 .card-content {
-    padding: 1em;
+    padding: 0.5em 1em 1em 1em;
 }
+.card-content h3 {
+    margin: 0;
+}
+
 
 .card-header {
     display: flex;
@@ -214,16 +236,22 @@ iconify-icon {
     margin-bottom: 0.5em;
     background: darken(var(--background-color), 60%);
 }
-
-.card-header .country-flag {
-    margin-right: 0.5em;
-    width: 2em;
-    height: auto;
+.step-icon {
+    width: 1.5em;
+    height: 1.5em;
 }
-.card-header .weather-icon {
-    margin-right: 0.5em;
-    width: 2em;
-    height: 2em;
+
+.country-flag-container, .weather-info-container, .date-container {
+    display: flex;
+    align-items: center;
+}
+
+
+
+.card-header > *:not(:last-child)::after {
+    content: "•";
+    margin: 0 0.5em;
+    color: #585858; /* Adjust color as needed */
 }
 
 .card-text {

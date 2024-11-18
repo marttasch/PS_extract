@@ -1,12 +1,17 @@
-<link rel="stylesheet" href="/assets/css/lightbox-thumbnails.css">
+---
 layout: default
 ---
 
 <!-- Display Trip Info -->
 <div class="trip-info">
     <h1>{{ page.title }}</h1>
-    <p>{{ page.summary }}, {{ page.total_distance | round }} km, {{ page.total_entries }} steps</p>
-
+    <div class="trip-summary">
+        <p class="summary-text">{{ page.summary }}</p>
+        <div class="trip-details">
+            <p class="total-distance" id="total-distance">{{ page.total_distance | round }} km</p>
+            <p class="total-entries">{{ page.total_entries }} steps</p>
+        </div>
+    </div>
     <!-- Display country flags -->
     <div id="country-flags">
         {% for code in page.countrie_codes_visited %}
@@ -50,9 +55,16 @@ layout: default
                     <div class="card-content">
                         <h3>{{ step.title }}</h3>
                         <div class="card-header">
-                            <iconify-icon class="country-flag" icon="flag:{{ step.country_code | downcase }}-4x3"></iconify-icon> 
-                            <iconify-icon class="weather-icon" icon="meteocons:{{ step.weather}}-fill" width="100%" height="100%"></iconify-icon>
-                            <small>{{ step.date | date: "%d.%m.%Y" }}</small>
+                            <div class="country-flag-container">
+                                <iconify-icon class="step-icon country-flag" icon="flag:{{ step.country_code | downcase }}-4x3" width="100%" height="100%"></iconify-icon>
+                            </div>
+                            <div class="weather-info-container">
+                                <iconify-icon class="step-icon weather-icon" icon="meteocons:{{ step.weather}}-fill" width="100%" height="100%"></iconify-icon>
+                                <small class="temperature">{{ step.weather_temperature | round }}°C</small>
+                            </div>
+                            <div class="date-container">
+                                <small class="date">{{ step.date | date: "%d.%m.%Y" }}</small>
+                            </div>
                         </div>
                         <!-- Text preview with expandable content -->
                         <div class="card-text">
@@ -233,27 +245,8 @@ let customSlideHTML = `<div class="gslide">
 </div>`;
 
 
-const lightbox = GLightbox({
-    onOpen: (instance) => {
-        const slides = instance.elements;
-        const thumbnailsContainer = document.querySelector('.gthumbnails');
-        thumbnailsContainer.innerHTML = ''; // Clear existing thumbnails
-
-        slides.forEach((slide, index) => {
-            const imgSrc = slide.querySelector('img').src;
-            const thumbnail = document.createElement('img');
-            thumbnail.src = imgSrc;
-            thumbnail.dataset.index = index;
-            thumbnail.addEventListener('click', () => {
-                instance.goToSlide(index);
-            });
-            thumbnailsContainer.appendChild(thumbnail);
-        });
-    },
+const lightbox = GLightbox({ 
     selector: '.glightbox',
-    lightboxHTML: customLightboxHTML,
-    slideHTML: customSlideHTML,
-    skin: 'mts_custom',
     keyboardNavigation: true,
     touchNavigation: true,
     loop: true,
@@ -264,5 +257,14 @@ const lightbox = GLightbox({
 
     height: '8%',
     width: '8%',
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var totalDistanceElement = document.getElementById("total-distance");
+    var totalDistanceText = totalDistanceElement.textContent;
+    var totalDistanceValue = parseInt(totalDistanceText.replace(' km', ''), 10);
+    totalDistanceElement.textContent = totalDistanceValue.toLocaleString('de-DE') + ' km';
 });
 </script>
