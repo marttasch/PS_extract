@@ -78,6 +78,8 @@ iconify-icon {
     background-color: var(--primary-color);
     color: #fff;
 }
+
+
 .trip-info h1 {
     margin: 0;
     font-weight: bold;
@@ -111,6 +113,8 @@ iconify-icon {
     height: auto;
     border-radius: 5px;
 }
+
+
 
 /* Content Container */
 .content-container {
@@ -253,6 +257,32 @@ iconify-icon {
 
 /* Media Queries */
 @media (max-width: 767px) {
+    .trip-info {
+        padding: 0.5em;
+    }
+    .trip-info h1 {
+        font-size: 1.5em;
+    }
+    .trip-summary {
+        font-size: 0.9em;
+        margin: 0 0 0.1em 0;
+    }
+    .trip-details {
+        font-size: 0.8em;
+    }
+    #country-flags .country-flag {
+        width: 1.5em;
+        height: 1.5em;
+        margin-top: 0em;
+        margin-right: 0.2em;
+        border-radius: 8px;
+    }
+    .content-container {
+        height: calc(100vh - 150px); /* Adjust based on the smaller header */
+    }
+}
+
+@media (max-width: 767px) {
     .content-container {
         flex-direction: column;
     }
@@ -267,14 +297,22 @@ iconify-icon {
         flex-direction: row;
     }
     .timeline::before {
-        bottom: 85px;
+        bottom: 88px;
         top: auto;
         left: 0;
         width: 100%;
         height: 4px;
     }
     .timeline-step::before {
-        display: none;
+        display: block;
+        position: absolute;
+        top: 65%;
+        left: 5px;
+        width: 10px;
+        height: 10px;
+    }
+    .timeline-step .card{
+        cursor: pointer;
     }
     .card-text {
         display: none;
@@ -308,7 +346,16 @@ iconify-icon {
         display: block;
     }
     .splide {
-        display: none;
+        display: block;
+    }
+
+    @media (max-width: 767px) {
+        .timeline .splide {
+            display: none;
+        }
+        .modal .splide {
+            display: block;
+        }
     }
 }
 
@@ -328,3 +375,103 @@ iconify-icon {
     /* Your styles for the last child of .splide__list */
     margin: 0 !important;
 }
+
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Black with opacity */
+    animation: fadeIn 0.5s ease-out; /* Add animation here */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 0;
+    padding: 20px;
+    border: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 80vh; /* Adjust this value as needed */
+}
+
+.modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+.modal-header .step-icon {
+    width: 1.5em;
+    height: 1.5em;
+}
+.modal-header .card-header > :not(:last-child)::after, .modal-header .card-header div small{
+    color: var(--text-color)
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-image {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+

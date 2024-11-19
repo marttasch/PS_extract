@@ -81,6 +81,47 @@ layout: default
                     </div>
                 </div>
             </div>
+            <!-- Step Modal for Mobile -->
+            <div class="modal" data-step-index="{{ forloop.index0 }}">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div class="modal-header">
+                        <h2>{{ step.title }}</h2>
+                        <div class="card-header">
+                            <div class="country-flag-container">
+                                <iconify-icon class="step-icon country-flag" icon="flag:{{ step.country_code | downcase }}-4x3" width="100%" height="100%"></iconify-icon>
+                                <span class="country-name">{{ step.country_name }}</span>
+                            </div>
+                            <div class="weather-info-container">
+                                <iconify-icon class="step-icon weather-icon" icon="meteocons:{{ step.weather}}-fill" width="100%" height="100%"></iconify-icon>
+                                <span class="temperature">{{ step.weather_temperature | round }}°C</span>
+                            </div>
+                            <div class="date-container">
+                                <span class="date">{{ step.date | date: "%d.%m.%Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <section class="splide splide-modal-{{ index }}" aria-label="Splide Modal Example">
+                            <div class="splide__track">
+                                <ul class="splide__list">
+                                    {% for photo in step.photos %}
+                                        <li class="splide__slide">
+                                            <a href="{{ photo }}" 
+                                               class="glightbox glightbox-modal-{{ index }}"
+                                               data-glightbox="title: <b>{{ step.title }}</b>" 
+                                               data-gallery="gallery-modal-{{ index }}">
+                                                <img src="{{ photo }}" alt="{{ step.title }}" class="modal-image">
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </section>
+                        <p>{{ step.description }}</p>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
     </div>
 </div>
@@ -203,10 +244,10 @@ layout: default
 </script>
 
 <script>
-// ##### Carousel #####
+// ##### Splide #####
 // Initialize Splide Carosel
 document.addEventListener('DOMContentLoaded', function () {
-    var splideElements = document.querySelectorAll('.splide');
+    var splideElements = document.querySelectorAll('.splide, .splide-modal');
 
     splideElements.forEach(function (element) {
         var splide = new Splide(element, {
@@ -217,43 +258,17 @@ document.addEventListener('DOMContentLoaded', function () {
             height   : '10rem',
             focus    : 'center',
             autoWidth: true,
+            pagination: true,
         });
 
         splide.mount();
     });
+
 });
 </script>
 
 <script>
 // ##### Lightbox #####
-const customLightboxHTML = `<div id="glightbox-body" class="glightbox-container">
-    <div class="gloader visible"></div>
-    <div class="goverlay"></div>
-    <div class="gcontainer">
-        <div id="glightbox-slider" class="gslider"></div>
-        <div class="gthumbnails"></div>
-        <button class="gnext gbtn" tabindex="0" aria-label="Next" data-customattribute="example">{nextSVG}</button>
-        <button class="gprev gbtn" tabindex="1" aria-label="Previous">{prevSVG}</button>
-        <button class="gclose gbtn" tabindex="2" aria-label="Close">{closeSVG}</button>
-    </div>
-</div>`;
-
-let customSlideHTML = `<div class="gslide">
-    <div class="gslide-inner-content">
-        <div class="ginner-container">
-            <div class="gslide-media">
-            </div>
-            <div class="gslide-description">
-                <div class="gdesc-inner">
-                    <h4 class="gslide-title"></h4>
-                    <div class="gslide-desc"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>`;
-
-
 const lightbox = GLightbox({ 
     selector: '.glightbox',
     keyboardNavigation: true,
@@ -277,4 +292,37 @@ document.addEventListener("DOMContentLoaded", function() {
     var totalDistanceValue = parseInt(totalDistanceText.replace(' km', ''), 10);
     totalDistanceElement.textContent = totalDistanceValue.toLocaleString('de-DE') + ' km';
 });
+</script>
+
+<script>
+    // ##### Modal Handling #####
+    // Open modal on step click
+    document.querySelectorAll('.timeline-step').forEach(function(stepElement){
+        stepElement.addEventListener('click', function(){
+            if (window.innerWidth <= 767) { // Check if the screen width is 767px or less
+                var index = stepElement.getAttribute('data-step-index');
+                var modal = document.querySelector('.modal[data-step-index="' + index + '"]');
+                if (modal) {
+                    modal.style.display = 'block';
+                }
+            }
+        });
+    });
+
+    // Close modal on close button click
+    document.querySelectorAll('.modal .close').forEach(function(closeButton){
+        closeButton.addEventListener('click', function(){
+            var modal = this.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Close modal when clicking outside of the modal content
+    window.addEventListener('click', function(event){
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
 </script>
