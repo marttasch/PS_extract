@@ -33,6 +33,8 @@ layout: default
             {% assign index = forloop.index0 %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <div class="card">
+                    <img class="card-background" src="{{ step.photos[0] }}" alt="{{ step.title }}">
+
                     <!-- Photo gallery carousel -->
                     <section class="splide splide-{{ index }}" aria-label="Splide Basic HTML Example">
                         <div class="splide__track">
