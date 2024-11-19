@@ -3,7 +3,9 @@
 import os
 import json
 import shutil
-import yaml
+import io
+from ruamel.yaml import YAML
+import textwrap
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 from collections import OrderedDict  # Import OrderedDict to maintain order
@@ -253,7 +255,13 @@ def generate_jekyll_trip_index(trip_data, steps_info, loc_data, trips_dir):
         'trip_slug': trip_slug
     }
 
-    content = '---\n' + yaml.dump(front_matter, sort_keys=False) + '---\n'
+    yaml = YAML()
+    yaml.default_flow_style = False
+    yaml.allow_unicode = True
+
+    content_stream = io.StringIO()
+    yaml.dump(front_matter, content_stream)
+    content = '---\n' + content_stream.getvalue() + '---\n'
 
     with open(os.path.join(trip_dir, 'index.md'), 'w', encoding='utf-8') as f:
         f.write(content)
@@ -299,6 +307,9 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
     else:
         step_videos = []
 
+    # Add clean multiline description
+    description = step.get('description', '').strip()
+
     # Prepare front matter
     front_matter = {
         'layout': 'step',
@@ -314,13 +325,32 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
         'country_code': step.get('country_code'),
         'weather': step.get('weather', ''),
         'weather_emoji': step.get('weather_emoji', ''),
-        'description': step['description'],
+        'weather_temperature': step.get('temperature', ''),
+        'description': description,
         'photos': step_photos,
         'videos': step_videos,
         'current_step_id': step['id'],
     }
 
-    content = '---\n' + yaml.dump(front_matter, sort_keys=False) + '---\n'
+    def multiline_str_presenter(dumper, data):
+        if isinstance(data, str) and '\n' in data:
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+    yaml = YAML()
+    yaml.default_flow_style = False
+    yaml.allow_unicode = True
+
+    def multiline_str_presenter(dumper, data):
+        if isinstance(data, str) and '\n' in data:
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+    yaml.representer.add_representer(str, multiline_str_presenter)
+
+    content_stream = io.StringIO()
+    yaml.dump(front_matter, content_stream)
+    content = '---\n' + content_stream.getvalue() + '---\n'
 
     with open(os.path.join(step_dir, step_filename), 'w', encoding='utf-8') as f:
         f.write(content)

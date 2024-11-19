@@ -60,7 +60,7 @@ def parse_data(trip_data, data_dir, extract_dir, verbose=False):
             step['weather_emoji'] = ''  # Assign an empty string if emoji not found
 
         step['description'] = entry['description'] if entry['description'] else ''
-
+        
         # Collect and sort media paths
         photos_path = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "photos")
         step['photos'] = []
