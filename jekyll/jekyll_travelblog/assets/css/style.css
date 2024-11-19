@@ -221,9 +221,13 @@ iconify-icon {
     position: relative;
 }
 
-.card-text .preview,
-.card-text .full-text {
+.card-text .preview pre,
+.card-text .full-text pre{
     margin-bottom: 1em;
+    white-space: pre-wrap; /* Allows the text to wrap */
+    word-wrap: break-word;
+    font-family: inherit;
+    overflow-x: hidden; /* Hide horizontal scroll */
 }
 
 .card-text .expand-button {

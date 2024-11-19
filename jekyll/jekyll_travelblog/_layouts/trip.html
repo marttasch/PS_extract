@@ -71,10 +71,10 @@ layout: default
                         <!-- Text preview with expandable content -->
                         <div class="card-text">
                             <div class="preview">
-                                {{ step.description | strip_html | truncatewords: 50 }}
+                                <pre>{{ step.description | strip_html | truncatewords: 50 }}</pre>
                             </div>
                             <div class="full-text" style="display: none;">
-                                {{ step.description }}
+                                <pre>{{ step.description }}</pre>
                             </div>
                             <button class="expand-button">Mehr anzeigen</button>
                         </div>
