@@ -33,7 +33,7 @@ layout: default
             {% assign index = forloop.index0 %}
             <div class="timeline-step" data-step-index="{{ forloop.index0 }}">
                 <div class="card">
-                    <img class="card-background" src="{{ step.photos[0] }}" alt="{{ step.title }}">
+                    <img class="card-background" src="{{ step.photos[0].url }}" alt="{{ step.title }}">
 
                     <!-- Photo gallery carousel -->
                     <section class="splide splide-{{ index }}" aria-label="Splide Basic HTML Example">
@@ -41,12 +41,12 @@ layout: default
                             <ul class="splide__list">
                                 {% for photo in step.photos %}
                                     <li class="splide__slide">
-                                        <a  href="{{ photo }}" 
+                                        <a  href="{{ photo.url }}" 
                                             class="glightbox glightbox-{{ index }}"
-                                            data-glightbox="title: <b>{{ step.title }}</b>" 
+                                            data-glightbox="title: <b>{{ step.title }}</b>; description: {{ photo.description }}" 
                                             data-gallery="gallery-{{ index }}"
                                             >
-                                            <img src="{{ photo }}" alt="{{ step.title }}" >
+                                            <img src="{{ photo.url }}" alt="{{ step.title }}" >
                                         </a>
                                     </li>
                                 {% endfor %}
@@ -107,11 +107,11 @@ layout: default
                                 <ul class="splide__list">
                                     {% for photo in step.photos %}
                                         <li class="splide__slide">
-                                            <a href="{{ photo }}" 
+                                            <a href="{{ photo.url }}" 
                                                class="glightbox glightbox-modal-{{ index }}"
-                                               data-glightbox="title: <b>{{ step.title }}</b>" 
+                                               data-glightbox="title: <b>{{ step.title }}</b>; description: {{ photo.description }}" 
                                                data-gallery="gallery-modal-{{ index }}">
-                                                <img src="{{ photo }}" alt="{{ step.title }}" class="modal-image">
+                                                <img src="{{ photo.url }}" alt="{{ step.title }}" class="modal-image">
                                             </a>
                                         </li>
                                     {% endfor %}

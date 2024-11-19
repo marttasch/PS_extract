@@ -279,7 +279,7 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
     media_dest_dir = os.path.join(trips_dir, trip_slug, 'media', step['slug'])
     os.makedirs(media_dest_dir, exist_ok=True)
 
-    # Copy photos and update paths
+    # Copy photos, update paths, and add descriptions
     photos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "photos")
     step_photos = []
     if os.path.exists(photos_src_dir):
@@ -289,11 +289,13 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
             shutil.copy(src_photo_path, dest_photo_path)
             # Update photo path relative to the site root
             photo_url = f"/trips/{trip_slug}/media/{step['slug']}/{photo}"
-            step_photos.append(photo_url)
+            # Add a placeholder for photo description
+            photo_description = step.get('photo_descriptions', {}).get(photo, '')
+            step_photos.append({'url': photo_url, 'description': photo_description})
     else:
         step_photos = []
 
-    # Copy videos and update paths
+    # Copy videos, update paths, and add descriptions
     videos_src_dir = os.path.join(data_dir, f"{step['slug']}_{step['id']}", "videos")
     step_videos = []
     if os.path.exists(videos_src_dir):
@@ -303,7 +305,9 @@ def generate_jekyll_step_page(step, trip_data, steps_info, loc_data, data_dir, t
             shutil.copy(src_video_path, dest_video_path)
             # Update video path relative to the site root
             video_url = f"/trips/{trip_slug}/media/{step['slug']}/{video}"
-            step_videos.append(video_url)
+            # Add a placeholder for video description
+            video_description = step.get('video_descriptions', {}).get(video, '')
+            step_videos.append({'url': video_url, 'description': video_description})
     else:
         step_videos = []
 
